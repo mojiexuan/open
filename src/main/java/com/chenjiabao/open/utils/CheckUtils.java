@@ -9,6 +9,20 @@ import java.util.regex.Pattern;
 public class CheckUtils {
 
     /**
+     * 空参检查
+     * @param params 参数列表
+     * @return boolean是否空参
+     */
+    public static boolean isValidEmptyParam(String ...params){
+        for (String param : params) {
+            if (param == null || param.trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 判断是否是11位中国手机号
      * @param phoneNumber 手机号字符串
      * @return 是否手机号
