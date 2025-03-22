@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * 时间工具
  */
-public class TimeUtil {
+public class TimeUtils {
 
     /**
      * 获取当前时间戳

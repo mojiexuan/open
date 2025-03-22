@@ -9,7 +9,7 @@ import java.util.Base64;
 /**
  * sha
  */
-public class HashUtil {
+public class HashUtils {
 
     // sha版本
     private static final String HASH_ALGORITHM = "SHA-256";
@@ -27,7 +27,7 @@ public class HashUtil {
     }
 
     /**
-     * 获取随机盐值
+     * 获取随机盐值base64
      */
     public static String getRandomSalt(){
         // 创建一个 SecureRandom 实例
@@ -42,7 +42,7 @@ public class HashUtil {
     /**
      * 字符串转hash值
      * @param str 需要转换的字符串
-     * @return hash摘要
+     * @return hash摘要转base64
      */
     public static String stringToHash256(String str) {
         try {
@@ -59,7 +59,7 @@ public class HashUtil {
      * 字符串转hash摘要，加上胡椒和盐值
      * @param str 需要加密的字符串
      * @param salt 盐值
-     * @return hash摘要
+     * @return hash摘要转base64
      */
     public static String stringToHash256WithSaltAndPepper(String str,String salt){
         return stringToHash256(str + salt + HASH_PEPPER);

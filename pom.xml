@@ -4,21 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.chenjiabao.open</groupId>
-    <artifactId>devtools</artifactId>
-    <version>0.0.1</version>
-    <packaging>jar</packaging>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <name>DevTools</name>
+    <description>开放工具集</description>
+    <url>https://github.com/majiexuan/open</url>
+    <groupId>com.chenjiabao.open</groupId>
+    <artifactId>devtools</artifactId>
+    <version>0.1.0</version>
+    <packaging>jar</packaging>
+
     <scm>
-        <url>github</url>
-        <connection>scm:git:url</connection>
-        <developerConnection>scm:git:url</developerConnection>
+        <url>https://github.com/majiexuan/open</url>
+        <connection>scm:git:git@github.com:majiexuan/open.git</connection>
+        <developerConnection>scm:git:git@github.com:majiexuan/open.git</developerConnection>
+        <tag>v${project.version}</tag>
     </scm>
 
     <licenses>
@@ -34,6 +38,17 @@
             <email>mail@chenjiabao.com</email>
         </developer>
     </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -56,8 +71,9 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -68,9 +84,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.10.0</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -84,10 +104,16 @@
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.2.3</version>
                 <configuration>
-                    <excution>E:\GnuPG\bin\gpg.exe</excution>
+                    <executable>E:\\GnuPG\\bin\\gpg.exe</executable>
+                    <gpgArguments>
+                        <arg>--batch</arg>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>sign-artifacts</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
@@ -102,7 +128,7 @@
                 <version>0.4.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>openUtilsCentral</publishingServerId>
+                    <publishingServerId>ossrh</publishingServerId>
                     <tokenAuth>true</tokenAuth>
                 </configuration>
             </plugin>

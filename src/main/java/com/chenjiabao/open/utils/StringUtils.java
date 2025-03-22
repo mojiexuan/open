@@ -6,13 +6,11 @@ import java.awt.datatransfer.StringSelection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
  */
-public class StringUtil {
+public class StringUtils {
 
     /**
      * 字符串转base64
@@ -21,42 +19,6 @@ public class StringUtil {
      */
     public static String stringToBase64(String str) {
         return Base64.getEncoder().encodeToString(str.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * 判断是否是11位中国手机号
-     * @param phoneNumber 手机号字符串
-     * @return 是否手机号
-     */
-    public static boolean isValidChinaPhoneNumber(String phoneNumber) {
-        // 正则表达式：以1 开头，第二位是3-9之间的数字，后面是9位数字
-        String regex = "^1[3-9]\\d{9}$";
-        // 判断字符串是否为空，并且是否匹配正则
-        return phoneNumber != null && phoneNumber.matches(regex);
-    }
-
-    /**
-     * 密码规则校验
-     * @param password
-     * @return
-     */
-    public static boolean isValidPassword(String password) {
-        // 正则表达式: ^ 表示开始，$ 表示结束，中间的 [a-zA-Z0-9._?!,]* 表示允许的字符
-        String regex = "^[a-zA-Z0-9._?!,]*$";
-        return password.matches(regex);
-    }
-
-    /**
-     * 验证电子邮件地址的函数
-     * @param email
-     * @return
-     */
-    public static boolean isValidEmail(String email) {
-        // 正则表达式模式，用于匹配整个文本是否是电子邮件地址
-        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 
     /**
