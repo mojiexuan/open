@@ -9,17 +9,17 @@ import java.util.regex.Pattern;
 public class CheckUtils {
 
     /**
-     * 空参检查
+     * 是否空参检查
      * @param params 参数列表
-     * @return boolean是否空参
+     * @return boolean是否空参，任一参数为空则返回true
      */
     public static boolean isValidEmptyParam(String ...params){
         for (String param : params) {
             if (param == null || param.trim().isEmpty()) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
