@@ -1,7 +1,6 @@
 package com.chenjiabao.open.utils;
 
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -9,12 +8,14 @@ import java.time.format.DateTimeFormatter;
  */
 public class TimeUtils {
 
+    private static final String ZONE_ID = "Asia/Shanghai";
+
     /**
      * 获取当前时间戳
      * @return 秒级时间戳
      */
     public static long getNowTimeStamp(){
-        return Instant.now().getEpochSecond();
+        return ZonedDateTime.now(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
     }
 
     /**
@@ -34,7 +35,7 @@ public class TimeUtils {
     public static String getTime(long time,String format){
         // 转换为东八区时间
         return DateTimeFormatter.ofPattern(format)
-                .withZone(ZoneId.of("Asia/Shanghai")).format(Instant.ofEpochSecond(time));
+                .withZone(ZoneId.of(ZONE_ID)).format(Instant.ofEpochSecond(time));
     }
 
     /**
@@ -44,6 +45,17 @@ public class TimeUtils {
      */
     public static String getTime(long time){
         return getTime(time,"yyyy-MM-dd HH:mm:ss");
+    }
+
+    /**
+     * 获取东八区当日凌晨（00:00）时间戳（秒级）
+     * @return 时间戳
+     */
+    public static long getNowStartDayTimeStamp(){
+        // 获取当前日期的午夜时间（LocalDateTime）
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        // 转换为时间戳（毫秒）
+        return startOfDay.atZone(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
     }
 
 }
