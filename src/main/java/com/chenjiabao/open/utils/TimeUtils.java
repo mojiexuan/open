@@ -27,6 +27,14 @@ public class TimeUtils {
     }
 
     /**
+     * 获取当前时间字符串，并指定返回格式
+     * @param format 格式，例如yyyy-MM-dd HH:mm:ss
+     */
+    public static String getNowTime(String format){
+        return getTime(getNowTimeStamp(), format);
+    }
+
+    /**
      * 秒级时间戳转指定格式字符串（东八区）
      * @param time 时间戳
      * @param format 格式，例如：yyyy-MM-dd HH:mm:ss
