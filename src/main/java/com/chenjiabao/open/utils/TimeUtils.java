@@ -11,6 +11,21 @@ public class TimeUtils {
     private static final String ZONE_ID = "Asia/Shanghai";
 
     /**
+     * 时间字符串转时间戳
+     * @param time 需要转换的时间字符串
+     * @param format 字符串格式
+     * @return 秒级时间戳
+     */
+    public static long getTimeStamp(String time, String format) {
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        // 将时间字符串解析为 LocalDateTime 对象
+        LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+        // 将 LocalDateTime 对象转换为时间戳
+        return dateTime.atZone(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
+    }
+
+    /**
      * 获取当前时间戳
      * @return 秒级时间戳
      */
@@ -36,7 +51,7 @@ public class TimeUtils {
 
     /**
      * 秒级时间戳转指定格式字符串（东八区）
-     * @param time 时间戳
+     * @param time 时间戳(秒级)
      * @param format 格式，例如：yyyy-MM-dd HH:mm:ss
      * @return 转换后的字符串
      */
@@ -48,7 +63,7 @@ public class TimeUtils {
 
     /**
      * 秒级时间戳转指定格式（yyyy-MM-dd HH:mm:ss）字符串（东八区）
-     * @param time 时间戳
+     * @param time 时间戳（秒级）
      * @return 转换后的字符串
      */
     public static String getTime(long time){
