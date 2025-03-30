@@ -18,7 +18,7 @@ public class FilesUtils {
     File file;
 
     public FilesUtils() {
-        file = null;
+        this.file = null;
     }
 
     public FilesUtils(String pathname) {
@@ -30,7 +30,7 @@ public class FilesUtils {
      */
     public boolean createDirectory(){
         if(!isHasFile()){
-            return file.mkdirs();
+            return this.file.mkdirs();
         }else {
             return true;
         }
@@ -48,7 +48,7 @@ public class FilesUtils {
      */
     public boolean isHasFile(){
         //exists()方法可以校验是否存在该文件，防止抛出异常
-        return file.exists();
+        return this.file.exists();
     }
 
     /**
@@ -58,12 +58,12 @@ public class FilesUtils {
         boolean flag;
         try{
             //创建父目录，若存在
-            File parentFile = file.getParentFile();
+            File parentFile = this.file.getParentFile();
             if(!parentFile.exists()){
                 createDirectory(parentFile);
             }
             //创建文件
-            flag = file.createNewFile();
+            flag = this.file.createNewFile();
         }catch (IOException e){
             e.printStackTrace();
             flag = false;
@@ -76,7 +76,7 @@ public class FilesUtils {
      * 删除文件
      */
     public boolean deleteFile(){
-        return file.delete();
+        return this.file.delete();
     }
 
     /**
@@ -120,7 +120,7 @@ public class FilesUtils {
         BufferedWriter bw = null;
 
         try{
-            fw = new FileWriter(file,append);
+            fw = new FileWriter(this.file,append);
             bw = new BufferedWriter(fw);
 
             bw.write(content);

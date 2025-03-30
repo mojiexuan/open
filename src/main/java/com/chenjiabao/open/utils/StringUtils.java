@@ -3,7 +3,9 @@ package com.chenjiabao.open.utils;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.Random;
 
@@ -115,6 +117,29 @@ public class StringUtils {
         }else {
             return "1亿+";
         }
+    }
+
+    /**
+     * 格式化文件大小
+     * @param bytes 通过file.getSize()获取的字节数
+     * @return 格式化后的字符串
+     */
+    public static String formatFileSize(long bytes) {
+        if (bytes <= 0) return "0";
+
+        String[] units = {"B", "KB", "MB", "GB"};
+        int unitIndex = (int) (Math.log(bytes) / Math.log(1024));
+        double size = bytes / Math.pow(1024, unitIndex);
+
+        // 确保最小值 0.01（例如 10字节 → 0.01KB）
+        if (size < 0.01 && unitIndex > 0) {
+            unitIndex--;
+            size = bytes / Math.pow(1024, unitIndex);
+        }
+
+        DecimalFormat df = new DecimalFormat("0.##");
+        df.setRoundingMode(RoundingMode.CEILING); // 向上取整确保最小值
+        return df.format(size) + " " + units[unitIndex];
     }
 
 }

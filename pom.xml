@@ -8,6 +8,10 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jwt.version>0.9.1</jwt.version>
+        <javax.xml.bind.version>2.3.1</javax.xml.bind.version>
+        <okhttp.version>4.12.0</okhttp.version>
+        <gson.version>2.11.0</gson.version>
     </properties>
 
     <name>DevTools</name>
@@ -15,7 +19,7 @@
     <url>https://github.com/majiexuan/open</url>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.1.8</version>
+    <version>0.1.9</version>
     <packaging>jar</packaging>
 
     <scm>
@@ -49,6 +53,37 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <dependencies>
+        <!--            jwt-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
+        <!--            jwt需要依赖该包-->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${javax.xml.bind.version}</version>
+        </dependency>
+
+        <!--            添加okhttp3依赖版本管理-->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
+
+        <!--        Gson-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>
