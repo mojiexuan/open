@@ -33,4 +33,36 @@ public class ApiResponse {
     public void setCode(RequestCode code) {
         this.code = code.getValue();
     }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public HashMap<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }
