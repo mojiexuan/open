@@ -10,7 +10,7 @@ import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -28,11 +28,11 @@ public class RequestUtils {
     private final Request.Builder requestBuilder;
     private String url;
     private HttpMethod method = HttpMethod.HTTP_METHOD_GET;
-    private Map<String, String> headers = null;
-    private Map<String, Object> params = null;
+    private HashMap<String, String> headers = null;
+    private HashMap<String, Object> params = null;
     private Request request;
 
-    public RequestUtils(String url) {
+    private RequestUtils(String url) {
         this.url = url;
         okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
@@ -63,7 +63,7 @@ public class RequestUtils {
      * @param headers 请求头
      * @return RequestUtils
      */
-    public RequestUtils setHeaders(Map<String, String> headers) {
+    public RequestUtils setHeaders(HashMap<String, String> headers) {
         this.headers = headers;
         return this;
     }
@@ -74,7 +74,7 @@ public class RequestUtils {
      * @param params 参数
      * @return RequestUtils
      */
-    public RequestUtils setParams(Map<String, Object> params) {
+    public RequestUtils setParams(HashMap<String, Object> params) {
         this.params = params;
         return this;
     }
@@ -274,15 +274,13 @@ public class RequestUtils {
         }
     }
 
-//    ResponseBody responseBody = response.body();
-//    BufferedSource source = responseBody.source();
-//    byte[] byteArray = source.readByteArray();
-//
-//    String responseString = source.readString(StandardCharsets.UTF_8);
-//                if (isJson(responseString)) {
-//        return responseString;
-//    } else {
-//        return Base64.getEncoder().encodeToString(byteArray);
-//    }
+    /**
+     * 构建
+     * @param url 地址
+     * @return RequestUtils
+     */
+    public static RequestUtils builder(String url) {
+        return new RequestUtils(url);
+    }
 
 }
