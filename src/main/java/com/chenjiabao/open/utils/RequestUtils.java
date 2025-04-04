@@ -185,7 +185,7 @@ public class RequestUtils {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful() || response.body() == null) {
-                    printDebug("失败");
+                    printDebug(response.code()+"失败"+response.message());
                     callback.onSuccess(new HttpResponse<>(1002,"失败"));
                 }else {
                     try {
@@ -297,11 +297,11 @@ public class RequestUtils {
             return;
         }
         logger.info("//========================================");
-        logger.info(this.url);
-        logger.info(this.method.getValue());
-        logger.info(gson.toJson(this.headers));
-        logger.info(gson.toJson(this.params));
-        logger.info(msg);
+        logger.info("地址："+this.url);
+        logger.info("方式："+this.method.getValue());
+        logger.info("请求头："+gson.toJson(this.headers));
+        logger.info("参数："+gson.toJson(this.params));
+        logger.info("消息："+msg);
         logger.info("//========================================");
     }
 
