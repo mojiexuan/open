@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * 网络请求工具
@@ -23,6 +24,7 @@ public class RequestUtils {
     private static final MediaType XmlMediaType = MediaType.parse("application/xml; charset=utf-8");
 
     private static final Gson gson = new Gson();
+    private static final Logger logger = Logger.getLogger("com.chenjiabao.open.utils.RequestUtils");
 
     private final OkHttpClient okHttpClient;
     private final Request.Builder requestBuilder;
@@ -31,6 +33,7 @@ public class RequestUtils {
     private HashMap<String, String> headers = null;
     private HashMap<String, Object> params = null;
     private Request request;
+    private boolean debug = false;
 
     private RequestUtils(String url) {
         this.url = url;
@@ -76,6 +79,15 @@ public class RequestUtils {
      */
     public RequestUtils setParams(HashMap<String, Object> params) {
         this.params = params;
+        return this;
+    }
+
+    /**
+     * 添加调试
+     * @return RequestUtils
+     */
+    public RequestUtils addDebug() {
+        this.debug = true;
         return this;
     }
 
@@ -173,6 +185,7 @@ public class RequestUtils {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful() || response.body() == null) {
+                    printDebug("失败");
                     callback.onSuccess(new HttpResponse<>(1002,"失败"));
                 }else {
                     try {
@@ -182,6 +195,7 @@ public class RequestUtils {
                                 gson.fromJson(response.body().string(),clazz)
                         ));
                     }catch (JsonSyntaxException | IOException e) {
+                        printDebug("解析字符串失败");
                         callback.onSuccess(new HttpResponse<>(1004, "解析字符串失败"));
                     }
                 }
@@ -190,6 +204,7 @@ public class RequestUtils {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                printDebug(e.getMessage());
                 callback.onFail(
                         new HttpResponse<>(1001,"请求错误")
                 );
@@ -272,6 +287,22 @@ public class RequestUtils {
             requestBuilder.url(this.url);
             request = requestBuilder.build();
         }
+    }
+
+    /**
+     * 打印调试信息
+     */
+    private void printDebug(String msg) {
+        if(!this.debug){
+            return;
+        }
+        logger.info("//========================================");
+        logger.info(this.url);
+        logger.info(this.method.getValue());
+        logger.info(gson.toJson(this.headers));
+        logger.info(gson.toJson(this.params));
+        logger.info(msg);
+        logger.info("//========================================");
     }
 
     /**
