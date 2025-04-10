@@ -1,6 +1,7 @@
 package com.chenjiabao.open.utils;
 
 import com.chenjiabao.open.utils.callback.RequestCallback;
+import com.chenjiabao.open.utils.enums.HttpBody;
 import com.chenjiabao.open.utils.enums.HttpMethod;
 import com.chenjiabao.open.utils.model.HttpResponse;
 import com.google.gson.Gson;
@@ -26,23 +27,23 @@ public class RequestUtils {
     private static final Gson gson = new Gson();
     private static final Logger logger = Logger.getLogger("com.chenjiabao.open.utils.RequestUtils");
 
-    private final OkHttpClient okHttpClient;
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+            .retryOnConnectionFailure(true) // 设置失败重试
+            .build();
     private final Request.Builder requestBuilder;
     private String url;
     private HttpMethod method = HttpMethod.HTTP_METHOD_GET;
     private HashMap<String, String> headers = null;
     private HashMap<String, Object> params = null;
+    private HttpBody body = HttpBody.FORM_DATA;
     private Request request;
     private boolean debug = false;
 
     private RequestUtils(String url) {
         this.url = url;
-        okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.MINUTES)
-                .readTimeout(5, TimeUnit.MINUTES)
-                .writeTimeout(5, TimeUnit.MINUTES)
-                .retryOnConnectionFailure(true) // 设置失败重试
-                .build();
         requestBuilder = new Request.Builder();
     }
 
@@ -63,11 +64,15 @@ public class RequestUtils {
     /**
      * 请求头
      *
-     * @param headers 请求头
+     * @param key   键
+     * @param value 值
      * @return RequestUtils
      */
-    public RequestUtils setHeaders(HashMap<String, String> headers) {
-        this.headers = headers;
+    public RequestUtils setHeaders(String key, String value) {
+        if (this.headers == null) {
+            this.headers = new HashMap<>();
+        }
+        this.headers.put(key, value);
         return this;
     }
 
@@ -83,7 +88,19 @@ public class RequestUtils {
     }
 
     /**
+     * 设置post请求体类型
+     *
+     * @param body 类型
+     * @return RequestUtils
+     */
+    public RequestUtils setBody(HttpBody body) {
+        this.body = body;
+        return this;
+    }
+
+    /**
      * 添加调试
+     *
      * @return RequestUtils
      */
     public RequestUtils addDebug() {
@@ -93,18 +110,19 @@ public class RequestUtils {
 
     /**
      * 开始同步请求，返回data为请求结果字符串
+     *
      * @return code==200时请求成功，请求结果在data中
      */
-    public HttpResponse<String> start(){
+    public HttpResponse<String> start() {
         HttpResponse<String> httpResponse = new HttpResponse<>();
         this.startAddHeaders();
         this.startAddParamsAndMethod();
         try {
-            Response response = this.okHttpClient.newCall(this.request).execute();
+            Response response = okHttpClient.newCall(this.request).execute();
             if (!response.isSuccessful() || response.body() == null) {
                 httpResponse.setCode(response.code());
                 httpResponse.setMsg("失败");
-            }else {
+            } else {
                 httpResponse.setCode(200);
                 httpResponse.setMsg("成功");
                 httpResponse.setData(response.body().string());
@@ -118,6 +136,7 @@ public class RequestUtils {
 
     /**
      * 开始同步请求,并尝试解析json格式字符串
+     *
      * @return code==200时请求成功，请求结果在data中，若解析字符串失败code==1004
      */
     public <T> HttpResponse<T> start(Class<T> clazz) {
@@ -125,11 +144,11 @@ public class RequestUtils {
         this.startAddHeaders();
         this.startAddParamsAndMethod();
         try {
-            Response response = this.okHttpClient.newCall(this.request).execute();
+            Response response = okHttpClient.newCall(this.request).execute();
             if (!response.isSuccessful() || response.body() == null) {
                 httpResponse.setCode(response.code());
                 httpResponse.setMsg("失败");
-            }else {
+            } else {
                 try {
                     httpResponse.setData(gson.fromJson(response.body().string(), clazz));
                     httpResponse.setCode(200);
@@ -148,18 +167,19 @@ public class RequestUtils {
 
     /**
      * 开始异步请求,code==200时请求成功，请求结果在data中
+     *
      * @param callback 回调类
      */
     public void start(RequestCallback<String> callback) {
         this.startAddHeaders();
         this.startAddParamsAndMethod();
-        this.okHttpClient.newCall(this.request).enqueue(new Callback() {
+        okHttpClient.newCall(this.request).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful() || response.body() == null) {
                     callback.onSuccess(new HttpResponse<>(1001, "失败"));
-                }else {
-                    callback.onSuccess(new HttpResponse<>(200, "成功",response.body().string()));
+                } else {
+                    callback.onSuccess(new HttpResponse<>(200, "成功", response.body().string()));
                 }
                 callback.complete();
             }
@@ -167,7 +187,7 @@ public class RequestUtils {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 callback.onFail(
-                        new HttpResponse<>(1001,"请求错误")
+                        new HttpResponse<>(1001, "请求错误")
                 );
                 callback.complete();
             }
@@ -176,25 +196,26 @@ public class RequestUtils {
 
     /**
      * 开始异步请求,code==200时请求成功，请求结果在data中
+     *
      * @param callback 回调类
      */
-    public <T> void start(Class<T> clazz,RequestCallback<T> callback) {
+    public <T> void start(Class<T> clazz, RequestCallback<T> callback) {
         this.startAddHeaders();
         this.startAddParamsAndMethod();
-        this.okHttpClient.newCall(this.request).enqueue(new Callback() {
+        okHttpClient.newCall(this.request).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful() || response.body() == null) {
-                    printDebug(response.code()+"失败"+response.message());
-                    callback.onSuccess(new HttpResponse<>(1002,"失败"));
-                }else {
+                    printDebug(response.code() + "失败" + response.message());
+                    callback.onSuccess(new HttpResponse<>(1002, "失败"));
+                } else {
                     try {
                         callback.onSuccess(new HttpResponse<>(
                                 200,
                                 "成功",
-                                gson.fromJson(response.body().string(),clazz)
+                                gson.fromJson(response.body().string(), clazz)
                         ));
-                    }catch (JsonSyntaxException | IOException e) {
+                    } catch (JsonSyntaxException | IOException e) {
                         printDebug("解析字符串失败");
                         callback.onSuccess(new HttpResponse<>(1004, "解析字符串失败"));
                     }
@@ -206,7 +227,7 @@ public class RequestUtils {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 printDebug(e.getMessage());
                 callback.onFail(
-                        new HttpResponse<>(1001,"请求错误")
+                        new HttpResponse<>(1001, "请求错误")
                 );
                 callback.complete();
             }
@@ -216,17 +237,17 @@ public class RequestUtils {
     /**
      * 流式请求，内容在data中，字符串格式
      */
-    public void stream(RequestCallback<String> callback){
+    public void stream(RequestCallback<String> callback) {
         this.startAddHeaders();
         this.startAddParamsAndMethod();
-        this.okHttpClient.newCall(this.request).enqueue(new Callback() {
+        okHttpClient.newCall(this.request).enqueue(new Callback() {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful() || response.body() == null) {
-                    callback.onSuccess(new HttpResponse<>(1002,"失败"));
-                }else {
-                    try(BufferedSource source = response.body().source()){
+                    callback.onSuccess(new HttpResponse<>(1002, "失败"));
+                } else {
+                    try (BufferedSource source = response.body().source()) {
                         String line;
                         while ((line = source.readUtf8Line()) != null) {
                             callback.onSuccess(new HttpResponse<>(
@@ -244,7 +265,7 @@ public class RequestUtils {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 callback.onFail(
-                        new HttpResponse<>(1001,"请求错误")
+                        new HttpResponse<>(1001, "请求错误")
                 );
                 callback.complete();
             }
@@ -264,6 +285,7 @@ public class RequestUtils {
      * 开始添加参数及请求方式
      */
     private void startAddParamsAndMethod() {
+        requestBuilder.url(this.url);
         if (this.params != null) {
             switch (this.method) {
                 case HTTP_METHOD_GET:
@@ -273,40 +295,54 @@ public class RequestUtils {
                         urlBuilder.addQueryParameter(k, String.valueOf(v));
                     });
                     this.url = urlBuilder.build().toString();
+                    requestBuilder.url(this.url);
                     break;
                 case HTTP_METHOD_POST:
-                    RequestBody body = RequestBody.create(
-                            JsonMediaType,
-                            gson.toJson(this.params)
-                    );
-                    requestBuilder.method("POST", body);
+                    switch (this.body) {
+                        case FORM_DATA:
+                            FormBody.Builder f = new FormBody.Builder();
+                            this.params.forEach((k, v) -> {
+                                f.add(k, String.valueOf(v));
+                            });
+                            requestBuilder.post(f.build());
+                            break;
+                        case JSON:
+                            RequestBody body = RequestBody.create(
+                                    gson.toJson(this.params),
+                                    JsonMediaType
+                            );
+                            requestBuilder.post(body);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 default:
                     break;
             }
-            requestBuilder.url(this.url);
-            request = requestBuilder.build();
         }
+        request = requestBuilder.build();
     }
 
     /**
      * 打印调试信息
      */
     private void printDebug(String msg) {
-        if(!this.debug){
+        if (!this.debug) {
             return;
         }
         logger.info("//========================================");
-        logger.info("地址："+this.url);
-        logger.info("方式："+this.method.getValue());
-        logger.info("请求头："+gson.toJson(this.headers));
-        logger.info("参数："+gson.toJson(this.params));
-        logger.info("消息："+msg);
+        logger.info("地址：" + this.url);
+        logger.info("方式：" + this.method.getValue());
+        logger.info("请求头：" + gson.toJson(this.headers));
+        logger.info("参数：" + gson.toJson(this.params));
+        logger.info("消息：" + msg);
         logger.info("//========================================");
     }
 
     /**
      * 构建
+     *
      * @param url 地址
      * @return RequestUtils
      */
