@@ -68,7 +68,7 @@ public class RequestUtils {
      * @param value 值
      * @return RequestUtils
      */
-    public RequestUtils setHeaders(String key, String value) {
+    public RequestUtils addHeader(String key, String value) {
         if (this.headers == null) {
             this.headers = new HashMap<>();
         }

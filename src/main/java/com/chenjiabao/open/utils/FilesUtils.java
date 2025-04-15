@@ -35,8 +35,8 @@ public class FilesUtils {
             return true;
         }
     }
-    public boolean createDirectory(File directory){
-        if(!isHasFile()){
+    public static boolean createDirectory(File directory){
+        if(!FilesUtils.isHasFile(directory)){
             return directory.mkdirs();
         }else {
             return true;
@@ -49,6 +49,15 @@ public class FilesUtils {
     public boolean isHasFile(){
         //exists()方法可以校验是否存在该文件，防止抛出异常
         return this.file.exists();
+    }
+
+    /**
+     * 判断文件是否存在
+     * @param directory 文件目录
+     */
+    public static boolean isHasFile(File directory){
+        //exists()方法可以校验是否存在该文件，防止抛出异常
+        return directory.exists();
     }
 
     /**
@@ -77,6 +86,9 @@ public class FilesUtils {
      */
     public boolean deleteFile(){
         return this.file.delete();
+    }
+    public static boolean deleteFile(File file){
+        return file.delete();
     }
 
     /**
