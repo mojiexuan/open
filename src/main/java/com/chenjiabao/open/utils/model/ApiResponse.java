@@ -3,8 +3,6 @@ package com.chenjiabao.open.utils.model;
 import com.chenjiabao.open.utils.TimeUtils;
 import com.chenjiabao.open.utils.enums.RequestCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,7 +23,7 @@ public class ApiResponse {
         this.message = message;
     }
 
-    public ApiResponse(RequestCode code, String message, HashMap<String,Object> data) {
+    public ApiResponse(RequestCode code, String message, Map<String,Object> data) {
         this.code = code.getValue();
         this.message = message;
         this.data = data;
@@ -55,7 +53,7 @@ public class ApiResponse {
         return data;
     }
 
-    public void setData(HashMap<String, Object> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 
