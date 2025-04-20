@@ -5,6 +5,7 @@ import com.chenjiabao.open.utils.enums.RequestCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 接口返回类
@@ -13,7 +14,7 @@ import java.util.HashMap;
 public class ApiResponse {
     private int code = 200;
     private String message = "成功";
-    private HashMap<String,Object> data = null;
+    private Map<String,Object> data = null;
     private String time = TimeUtils.getNowTime();
 
     public ApiResponse() {
@@ -50,7 +51,7 @@ public class ApiResponse {
         this.message = message;
     }
 
-    public HashMap<String, Object> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 

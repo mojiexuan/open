@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <chenjiabao.jwt.version>0.9.1</chenjiabao.jwt.version>
         <chenjiabao.javax.xml.bind.version>2.3.1</chenjiabao.javax.xml.bind.version>
@@ -19,7 +19,7 @@
     <url>https://github.com/majiexuan/open</url>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.2.7</version>
+    <version>0.2.8</version>
     <packaging>jar</packaging>
 
     <scm>
