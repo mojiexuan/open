@@ -16,15 +16,15 @@ public class ApiResponse {
     private Map<String,Object> data = null;
     private String time = TimeUtils.getNowTime();
 
-    public ApiResponse() {
+    private ApiResponse() {
     }
 
-    public ApiResponse(RequestCode code, String message) {
+    private ApiResponse(RequestCode code, String message) {
         this.code = code.getValue();
         this.message = message;
     }
 
-    public ApiResponse(RequestCode code, String message, Map<String,Object> data) {
+    private ApiResponse(RequestCode code, String message, Map<String,Object> data) {
         this.code = code.getValue();
         this.message = message;
         this.data = data;
@@ -72,6 +72,10 @@ public class ApiResponse {
 
     public static ApiResponse builder(RequestCode code, String message){
         return new ApiResponse(code,message);
+    }
+
+    public static ApiResponse builder(Map<String,Object> data){
+        return builder(RequestCode.CODE_200,"成功",data);
     }
 
     public static ApiResponse builder(RequestCode code, String message, Map<String,Object> data) {
