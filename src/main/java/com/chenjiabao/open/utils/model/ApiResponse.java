@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 接口返回类
+ * @author 陈佳宝 mail@chenjiabao.com
  */
 @JsonInclude(JsonInclude.Include.NON_NULL) // 不序列化空属性
 public class ApiResponse {
@@ -64,4 +65,17 @@ public class ApiResponse {
     public void setTime(String time) {
         this.time = time;
     }
+
+    public static ApiResponse builder(){
+        return new ApiResponse();
+    }
+
+    public static ApiResponse builder(RequestCode code, String message){
+        return new ApiResponse(code,message);
+    }
+
+    public static ApiResponse builder(RequestCode code, String message, Map<String,Object> data) {
+        return new ApiResponse(code, message, data);
+    }
+
 }
