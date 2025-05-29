@@ -70,12 +70,20 @@ public class ApiResponse {
         return new ApiResponse();
     }
 
+    public static ApiResponse builder(RequestCode code){
+        return new ApiResponse(code,code.getMessage());
+    }
+
     public static ApiResponse builder(RequestCode code, String message){
         return new ApiResponse(code,message);
     }
 
     public static ApiResponse builder(Map<String,Object> data){
         return builder(RequestCode.CODE_200,"成功",data);
+    }
+
+    public static ApiResponse builder(RequestCode code, Map<String,Object> data){
+        return builder(code,code.getMessage(),data);
     }
 
     public static ApiResponse builder(RequestCode code, String message, Map<String,Object> data) {

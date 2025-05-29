@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * 校验工具集
+ * @author ChenJiaBao
  */
 public class CheckUtils {
 

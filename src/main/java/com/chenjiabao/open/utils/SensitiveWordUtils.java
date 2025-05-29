@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 敏感词检测
+ * @author ChenJiaBao
  */
 public class SensitiveWordUtils {
 

@@ -1,5 +1,9 @@
 package com.chenjiabao.open.utils.enums;
 
+/**
+ * @author ChenJiaBao
+ */
+
 public enum HttpBody {
 
     JSON("json"),
@@ -7,13 +11,13 @@ public enum HttpBody {
     FORM_DATA("form-data"),
     ;
 
-    private final String name;
+    private final String value;
 
-    HttpBody(String name) {
-        this.name = name;
+    HttpBody(String value) {
+        this.value = value;
     }
 
     public String getValue() {
-        return name;
+        return value;
     }
 }

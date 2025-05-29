@@ -18,7 +18,10 @@ import java.util.logging.Logger;
 
 /**
  * 网络请求工具
+ * @author ChenJiaBao
+ * @deprecated 0.3.3中不可用，请降低版本至0.3.2或升级最新版本
  */
+@Deprecated
 public class RequestUtils {
 
     private static final MediaType JsonMediaType = MediaType.parse("application/json");
@@ -31,7 +34,7 @@ public class RequestUtils {
             .connectTimeout(5, TimeUnit.MINUTES)
             .readTimeout(5, TimeUnit.MINUTES)
             .writeTimeout(5, TimeUnit.MINUTES)
-            .retryOnConnectionFailure(true) // 设置失败重试
+            .retryOnConnectionFailure(true)
             .build();
     private final Request.Builder requestBuilder;
     private String url;

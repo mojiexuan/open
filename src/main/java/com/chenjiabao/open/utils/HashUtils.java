@@ -8,6 +8,7 @@ import java.util.Base64;
 
 /**
  * sha
+ * @author ChenJiaBao
  */
 public class HashUtils {
 
@@ -21,7 +22,7 @@ public class HashUtils {
      * @param hashPepper 胡椒值
      */
     public static void setHashPepper(String hashPepper) {
-        if(HASH_PEPPER.equals("8wFhA5VR9DbeOnmpcHq+1wFP8nL0fgFqYSsNV7FjLsI=")){
+        if("8wFhA5VR9DbeOnmpcHq+1wFP8nL0fgFqYSsNV7FjLsI=".equals(HASH_PEPPER)){
             HASH_PEPPER = hashPepper;
         }
     }

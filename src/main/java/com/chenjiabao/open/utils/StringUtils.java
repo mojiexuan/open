@@ -11,6 +11,7 @@ import java.util.Random;
 
 /**
  * 字符串工具类
+ * @author ChenJiaBao
  */
 public class StringUtils {
 
@@ -125,7 +126,9 @@ public class StringUtils {
      * @return 格式化后的字符串
      */
     public static String formatFileSize(long bytes) {
-        if (bytes <= 0) return "0";
+        if (bytes <= 0) {
+            return "0";
+        }
 
         String[] units = {"B", "KB", "MB", "GB"};
         int unitIndex = (int) (Math.log(bytes) / Math.log(1024));

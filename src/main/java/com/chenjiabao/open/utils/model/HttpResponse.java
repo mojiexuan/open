@@ -2,6 +2,7 @@ package com.chenjiabao.open.utils.model;
 
 /**
  * HTTP请求结果
+ * @author ChenJiaBao
  */
 public class HttpResponse<T> {
     private int code;
