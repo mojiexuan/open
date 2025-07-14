@@ -15,116 +15,150 @@ import java.util.Map;
 public class ApiResponse {
     private int code = 200;
     private String message = "成功";
-    private Map<String,Object> data = null;
+    private Map<String, Object> data = null;
     private String time = TimeUtils.getNowTime();
 
     private ApiResponse() {
     }
 
-    private ApiResponse(RequestCode code, String message) {
-        this.code = code.getValue();
-        this.message = message;
-    }
-
-    private ApiResponse(RequestCode code, String message, Map<String,Object> data) {
-        this.code = code.getValue();
+    private ApiResponse(int code, String message, Map<String, Object> data) {
+        this.code = code;
         this.message = message;
         this.data = data;
-    }
-
-    public void setCode(RequestCode code) {
-        this.code = code.getValue();
     }
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(Map<String, Object> data) {
-        this.data = data;
-    }
-
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    /**
+     * 创建一个ApiResponse的Builder
+     * @return Builder实例
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
-     * 创建一个ApiResponse的Builder
+     * 使用指定的状态码创建一个Builder
+     * @param code 状态码
+     * @return Builder实例
+     */
+    public static Builder builder(RequestCode code) {
+        return new Builder().code(code);
+    }
+
+    /**
+     * 使用成功状态码和数据创建一个Builder
+     * @param data 响应数据
+     * @return Builder实例
+     */
+    public static Builder success(Map<String, Object> data) {
+        return new Builder().data(data);
+    }
+
+    /**
+     * 使用成功状态码创建一个Builder
+     * @return Builder实例
+     */
+    public static Builder success() {
+        return new Builder();
+    }
+
+    /**
+     * 使用错误状态码创建一个Builder
+     * @param code 错误状态码
+     * @return Builder实例
+     */
+    public static Builder error(RequestCode code) {
+        return new Builder().code(code);
+    }
+
+    /**
+     * 使用错误状态码和自定义消息创建一个Builder
+     * @param code 错误状态码
+     * @param message 自定义错误消息
+     * @return Builder实例
+     */
+    public static Builder error(RequestCode code, String message) {
+        return new Builder().code(code).message(message);
+    }
+
+    /**
+     * ApiResponse的Builder类
      */
     public static class Builder {
         private RequestCode code = RequestCode.CODE_200;
-        private String message = "成功";
-        private Map<String,Object> data = null;
+        private String message = null;
+        private Map<String, Object> data = null;
 
-        public Builder setCode(RequestCode code){
+        private Builder() {
+        }
+
+        /**
+         * 设置状态码
+         * @param code 状态码
+         * @return Builder实例
+         */
+        public Builder code(RequestCode code) {
             this.code = code;
             return this;
         }
 
-        public Builder setMessage(String message){
+        /**
+         * 设置消息
+         * @param message 消息
+         * @return Builder实例
+         */
+        public Builder message(String message) {
             this.message = message;
             return this;
         }
 
-        public Builder addData(String key,Object value){
-            if(data == null){
-                data = new HashMap<>();
-            }
-            data.put(key,value);
+        /**
+         * 设置数据
+         * @param data 数据Map
+         * @return Builder实例
+         */
+        public Builder data(Map<String, Object> data) {
+            this.data = data;
             return this;
         }
 
-        public ApiResponse success(){
-            return build();
+        /**
+         * 添加单个数据项
+         * @param key 键
+         * @param value 值
+         * @return Builder实例
+         */
+        public Builder addData(String key, Object value) {
+            if (data == null) {
+                data = new HashMap<>();
+            }
+            data.put(key, value);
+            return this;
         }
 
-        public ApiResponse build(){
-            return new ApiResponse(code,message,data);
+        /**
+         * 构建ApiResponse实例
+         * @return ApiResponse实例
+         */
+        public ApiResponse build() {
+            int codeValue = code.getValue();
+            String msg = message != null ? message : code.getMessage();
+            return new ApiResponse(codeValue, msg, data);
         }
     }
-
-    public static ApiResponse builder(){
-        return new ApiResponse();
-    }
-
-    public static ApiResponse builder(RequestCode code){
-        return new ApiResponse(code,code.getMessage());
-    }
-
-    public static ApiResponse builder(RequestCode code, String message){
-        return new ApiResponse(code,message);
-    }
-
-    public static ApiResponse builder(Map<String,Object> data){
-        return builder(RequestCode.CODE_200,"成功",data);
-    }
-
-    public static ApiResponse builder(RequestCode code, Map<String,Object> data){
-        return builder(code,code.getMessage(),data);
-    }
-
-    public static ApiResponse builder(RequestCode code, String message, Map<String,Object> data) {
-        return new ApiResponse(code, message, data);
-    }
-
 }
