@@ -3,6 +3,8 @@ package com.chenjiabao.open.utils.model;
 import com.chenjiabao.open.utils.TimeUtils;
 import com.chenjiabao.open.utils.enums.RequestCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -64,6 +66,41 @@ public class ApiResponse {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    /**
+     * 创建一个ApiResponse的Builder
+     */
+    public static class Builder {
+        private RequestCode code = RequestCode.CODE_200;
+        private String message = "成功";
+        private Map<String,Object> data = null;
+
+        public Builder setCode(RequestCode code){
+            this.code = code;
+            return this;
+        }
+
+        public Builder setMessage(String message){
+            this.message = message;
+            return this;
+        }
+
+        public Builder addData(String key,Object value){
+            if(data == null){
+                data = new HashMap<>();
+            }
+            data.put(key,value);
+            return this;
+        }
+
+        public ApiResponse success(){
+            return build();
+        }
+
+        public ApiResponse build(){
+            return new ApiResponse(code,message,data);
+        }
     }
 
     public static ApiResponse builder(){
