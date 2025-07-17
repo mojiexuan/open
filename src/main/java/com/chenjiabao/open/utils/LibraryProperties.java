@@ -36,4 +36,12 @@ public class LibraryProperties {
     // 文件上传配置
     @NestedConfigurationProperty
     private File file = new File();
+
+    // Api配置
+    @NestedConfigurationProperty
+    private Api api = new Api();
+
+    // 静态资源
+    @NestedConfigurationProperty
+    private Static statics = new Static();
 }

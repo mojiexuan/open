@@ -1,16 +1,61 @@
 package com.chenjiabao.open.utils;
 
+import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
+import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
+import com.chenjiabao.open.utils.controller.PublicController;
+import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.List;
 
 /**
  * @author ChenJiaBao
  */
 @Configuration
+@ConditionalOnWebApplication
 @EnableConfigurationProperties(LibraryProperties.class)
-public class LibraryAutoConfiguration {
+public class LibraryAutoConfiguration implements WebMvcConfigurer {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PublicController publicController(LibraryProperties properties) {
+        return new PublicController(properties);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(requestAttributeParamArgumentResolver());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RequestAttributeParamArgumentResolver requestAttributeParamArgumentResolver() {
+        return new RequestAttributeParamArgumentResolver();
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public VersionedRequestMappingHandlerMapping versionedRequestMappingHandlerMapping() {
+        VersionedRequestMappingHandlerMapping handlerMapping = new VersionedRequestMappingHandlerMapping();
+        handlerMapping.setOrder(0);
+        return handlerMapping;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApiVersionAspect apiVersionAspect(
+            LibraryProperties properties,
+            ApplicationContext applicationContext,
+            VersionedRequestMappingHandlerMapping versionedRequestMappingHandlerMapping){
+        return new ApiVersionAspect(properties, applicationContext, versionedRequestMappingHandlerMapping);
+    }
 
     @Bean
     @ConditionalOnMissingBean // 仅当不存在该类型的bean时，才会创建该bean
