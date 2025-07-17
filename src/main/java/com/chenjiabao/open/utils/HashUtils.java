@@ -21,7 +21,7 @@ public class HashUtils {
      * 设置胡椒，仅可更新一次
      * @param hashPepper 胡椒值
      */
-    public static void setHashPepper(String hashPepper) {
+    public void setHashPepper(String hashPepper) {
         if("8wFhA5VR9DbeOnmpcHq+1wFP8nL0fgFqYSsNV7FjLsI=".equals(HASH_PEPPER)){
             HASH_PEPPER = hashPepper;
         }
@@ -30,7 +30,7 @@ public class HashUtils {
     /**
      * 获取随机盐值base64
      */
-    public static String getRandomSalt(){
+    public String getRandomSalt(){
         // 创建一个 SecureRandom 实例
         SecureRandom secureRandom = new SecureRandom();
         // 生成16字节的盐值
@@ -45,7 +45,7 @@ public class HashUtils {
      * @param str 需要转换的字符串
      * @return hash摘要转base64
      */
-    public static String stringToHash256(String str) {
+    public String stringToHash256(String str) {
         try {
             MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
             byte[] hashBytes = digest.digest(str.getBytes(StandardCharsets.UTF_8));
@@ -62,7 +62,7 @@ public class HashUtils {
      * @param salt 盐值
      * @return hash摘要转base64
      */
-    public static String stringToHash256WithSaltAndPepper(String str,String salt){
+    public String stringToHash256WithSaltAndPepper(String str,String salt){
         return stringToHash256(str + salt + HASH_PEPPER);
     }
 

@@ -20,14 +20,14 @@ public class StringUtils {
      * @param str 需要转换的字符串
      * @return base64
      */
-    public static String stringToBase64(String str) {
+    public String stringToBase64(String str) {
         return Base64.getEncoder().encodeToString(str.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * 判断字符串是否为空
      */
-    public static boolean isStringEmpty(String string) {
+    public boolean isStringEmpty(String string) {
         return string == null || string.isEmpty() || string.contains(" ");
     }
 
@@ -36,7 +36,7 @@ public class StringUtils {
      *
      * @param isContains 是否校验空格，为true时若字符串中存在空格将返回true
      */
-    public static boolean isStringEmpty(String string, boolean isContains) {
+    public boolean isStringEmpty(String string, boolean isContains) {
         if (isContains) {
             return string == null || string.isEmpty() || string.contains(" ");
         } else {
@@ -48,14 +48,14 @@ public class StringUtils {
     /**
      * 判断字符串是否纯数字构成
      */
-    public static boolean isStringNumber(String string) {
+    public boolean isStringNumber(String string) {
         return string.matches("-?\\d+");
     }
 
     /**
      * 复制文本到剪切板
      */
-    public static void copyToClipboard(String string) {
+    public void copyToClipboard(String string) {
         StringSelection stringSelection = new StringSelection(string);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -67,7 +67,7 @@ public class StringUtils {
      * @param characters 指定范围如"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
      * @param num        长度
      */
-    public static String generateSureString(String characters, int num) {
+    public String generateSureString(String characters, int num) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
 
@@ -84,7 +84,7 @@ public class StringUtils {
      *
      * @param num 长度
      */
-    public static String generateSureString(int num) {
+    public String generateSureString(int num) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return generateSureString(characters,num);
     }
@@ -94,11 +94,12 @@ public class StringUtils {
      *
      * @param length 长度
      */
-    public static String generateRandomNumberString(int length) {
+    public String generateRandomNumberString(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append(random.nextInt(10)); // 生成0-9之间的随机数字
+            // 生成0-9之间的随机数字
+            sb.append(random.nextInt(10));
         }
         return sb.toString();
     }
@@ -108,7 +109,7 @@ public class StringUtils {
      * @param num long型数量
      * @return 格式化后的字符串
      */
-    public static String numberFormat(long num){
+    public String numberFormat(long num){
         if(num < 1000){
             return Long.toString(num);
         } else if (num < 10000) {
@@ -125,7 +126,7 @@ public class StringUtils {
      * @param bytes 通过file.getSize()获取的字节数
      * @return 格式化后的字符串
      */
-    public static String formatFileSize(long bytes) {
+    public String formatFileSize(long bytes) {
         if (bytes <= 0) {
             return "0";
         }
@@ -141,7 +142,8 @@ public class StringUtils {
         }
 
         DecimalFormat df = new DecimalFormat("0.##");
-        df.setRoundingMode(RoundingMode.CEILING); // 向上取整确保最小值
+        // 向上取整确保最小值
+        df.setRoundingMode(RoundingMode.CEILING);
         return df.format(size) + " " + units[unitIndex];
     }
 

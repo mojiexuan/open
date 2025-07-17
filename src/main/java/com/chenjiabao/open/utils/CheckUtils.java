@@ -20,6 +20,9 @@ public class CheckUtils {
     // 字母数字正则
     private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
+    // 纯字母正则
+    private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("^[a-zA-Z]+$");
+
     // 中国大陆身份证号正则（简单版）
     private static final Pattern ID_CARD_PATTERN =
             Pattern.compile("^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}[0-9Xx]$");
@@ -29,7 +32,7 @@ public class CheckUtils {
      * @param params 参数列表
      * @return boolean是否空参，任一参数为空则返回true
      */
-    public static boolean isValidEmptyParam(String... params) {
+    public boolean isValidEmptyParam(String... params) {
         if (params == null || params.length == 0) {
             return true;
         }
@@ -47,7 +50,7 @@ public class CheckUtils {
      * @param phoneNumber 手机号字符串
      * @return 是否手机号
      */
-    public static boolean isValidChinaPhoneNumber(String phoneNumber) {
+    public boolean isValidChinaPhoneNumber(String phoneNumber) {
         if (phoneNumber == null) {
             return false;
         }
@@ -61,7 +64,7 @@ public class CheckUtils {
      * @param email 电子邮件地址
      * @return 是否合法电子邮件
      */
-    public static boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 
@@ -70,7 +73,7 @@ public class CheckUtils {
      * @param string 需要验证的字符串
      * @return 是否纯数字字符串
      */
-    public static boolean isValidNumberString(String string) {
+    public boolean isValidNumberString(String string) {
         return string != null && NUMBER_PATTERN.matcher(string).matches();
     }
 
@@ -79,8 +82,17 @@ public class CheckUtils {
      * @param str 需要验证的字符串
      * @return boolean
      */
-    public static boolean isValidNumberAndLetters(String str) {
+    public boolean isValidNumberAndLetters(String str) {
         return str != null && ALPHANUMERIC_PATTERN.matcher(str).matches();
+    }
+
+    /**
+     * 验证字符串是否仅由字母(a-z、A-Z)构成
+     * @param str 需要验证的字符串
+     * @return 是否纯字母字符串
+     */
+    public boolean isValidAlphabeticString(String str) {
+        return str != null && ALPHABETIC_PATTERN.matcher(str).matches();
     }
 
     /**
@@ -88,7 +100,7 @@ public class CheckUtils {
      * @param idCard 身份证号
      * @return 是否合法身份证号
      */
-    public static boolean isValidIdCard(String idCard) {
+    public boolean isValidIdCard(String idCard) {
         return idCard != null && ID_CARD_PATTERN.matcher(idCard).matches();
     }
 
@@ -99,7 +111,7 @@ public class CheckUtils {
      * @param max 最大长度（包含）
      * @return 是否在长度范围内
      */
-    public static boolean isLengthInRange(String str, int min, int max) {
+    public boolean isLengthInRange(String str, int min, int max) {
         if (str == null) {
             return false;
         }
@@ -112,7 +124,7 @@ public class CheckUtils {
      * @param username 用户名
      * @return 是否合法
      */
-    public static boolean isValidUsername(String username) {
+    public boolean isValidUsername(String username) {
         return username != null && username.matches("^[a-zA-Z]\\w{3,19}$");
     }
 }

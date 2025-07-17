@@ -3,6 +3,7 @@ package com.chenjiabao.open.utils.model;
 import com.chenjiabao.open.utils.TimeUtils;
 import com.chenjiabao.open.utils.enums.RequestCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,12 +12,13 @@ import java.util.Map;
  * 接口返回类
  * @author 陈佳宝 mail@chenjiabao.com
  */
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL) // 不序列化空属性
 public class ApiResponse {
     private int code = 200;
     private String message = "成功";
     private Map<String, Object> data = null;
-    private String time = TimeUtils.getNowTime();
+    private String time = new TimeUtils().getNowTime();
 
     private ApiResponse() {
     }
@@ -25,22 +27,6 @@ public class ApiResponse {
         this.code = code;
         this.message = message;
         this.data = data;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     /**

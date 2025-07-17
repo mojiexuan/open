@@ -24,7 +24,7 @@ public class JwtUtils {
      * 设置秘钥（只能设置一次）
      * @param jwtSecret 新的秘钥（建议使用Base64编码的32位以上字符串）
      */
-    public static synchronized void setJwtSecret(String jwtSecret) {
+    public synchronized void setJwtSecret(String jwtSecret) {
         if(SECRET_KEY == null){
             SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(jwtSecret),"HmacSHA256");
         }
@@ -34,7 +34,7 @@ public class JwtUtils {
      * 设置过期时间（单位：秒）
      * @param expires 过期时间 秒
      */
-    public static synchronized void setExpires(int expires){
+    public synchronized void setExpires(int expires){
         if(EXPIRES == 7200){
             EXPIRES = expires;
         }
@@ -43,7 +43,7 @@ public class JwtUtils {
     /**
      * 获取统一的签名密钥
      */
-    private static SecretKey getSigningKey() {
+    private SecretKey getSigningKey() {
         if(SECRET_KEY == null){
             SECRET_KEY = Jwts.SIG.HS256.key().build();
         }
@@ -55,7 +55,7 @@ public class JwtUtils {
      * @param subject 用户唯一标识（如用户ID）
      * @return 生成的JWT Token
      */
-    public static String createToken(String subject) {
+    public String createToken(String subject) {
 
         // 计算东8区时间
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT+8"));
@@ -76,7 +76,7 @@ public class JwtUtils {
      * @param token JWT Token
      * @return 声明内容
      */
-    public static Claims parseToken(String token) {
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -89,7 +89,7 @@ public class JwtUtils {
      * @param token JWT Token
      * @return 是否有效
      */
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Claims claims = parseToken(token);
             return claims.getExpiration().after(new Date());

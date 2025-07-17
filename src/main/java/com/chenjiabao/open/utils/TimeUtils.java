@@ -17,7 +17,7 @@ public class TimeUtils {
      * @param format 字符串格式
      * @return 秒级时间戳
      */
-    public static long getTimeStamp(String time, String format) {
+    public long getTimeStamp(String time, String format) {
         // 定义日期时间格式
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         // 将时间字符串解析为 LocalDateTime 对象
@@ -30,7 +30,7 @@ public class TimeUtils {
      * 获取当前时间戳
      * @return 秒级时间戳
      */
-    public static long getNowTimeStamp(){
+    public long getNowTimeStamp(){
         return ZonedDateTime.now(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
     }
 
@@ -38,7 +38,7 @@ public class TimeUtils {
      * 获取当前时间字符串
      * @return yyyy-MM-dd HH:mm:ss格式
      */
-    public static String getNowTime(){
+    public String getNowTime(){
         return getTime(getNowTimeStamp());
     }
 
@@ -46,7 +46,7 @@ public class TimeUtils {
      * 获取当前时间字符串，并指定返回格式
      * @param format 格式，例如yyyy-MM-dd HH:mm:ss
      */
-    public static String getNowTime(String format){
+    public String getNowTime(String format){
         return getTime(getNowTimeStamp(), format);
     }
 
@@ -56,7 +56,7 @@ public class TimeUtils {
      * @param format 格式，例如：yyyy-MM-dd HH:mm:ss
      * @return 转换后的字符串
      */
-    public static String getTime(long time,String format){
+    public String getTime(long time,String format){
         // 转换为东八区时间
         return DateTimeFormatter.ofPattern(format)
                 .withZone(ZoneId.of(ZONE_ID)).format(Instant.ofEpochSecond(time));
@@ -67,7 +67,7 @@ public class TimeUtils {
      * @param time 时间戳（秒级）
      * @return 转换后的字符串
      */
-    public static String getTime(long time){
+    public String getTime(long time){
         return getTime(time,"yyyy-MM-dd HH:mm:ss");
     }
 
@@ -75,7 +75,7 @@ public class TimeUtils {
      * 获取东八区当日凌晨（00:00）时间戳（秒级）
      * @return 时间戳
      */
-    public static long getNowStartDayTimeStamp(){
+    public long getNowStartDayTimeStamp(){
         // 获取当前日期的午夜时间（LocalDateTime）
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         // 转换为时间戳（毫秒）
