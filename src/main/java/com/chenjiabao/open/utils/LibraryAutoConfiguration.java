@@ -67,9 +67,7 @@ public class LibraryAutoConfiguration {
         if(!properties.getMailPassword().isEmpty()){
             builder = builder.setPassword(properties.getMailPassword());
         }
-        if(!properties.getMailProtocol().isEmpty()){
-            builder = builder.setProtocol(properties.getMailProtocol());
-        }
+        builder = builder.setProtocol(properties.getMailProtocol());
 
         return builder;
     }

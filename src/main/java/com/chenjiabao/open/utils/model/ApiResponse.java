@@ -47,6 +47,15 @@ public class ApiResponse {
     }
 
     /**
+     * 使用指定的状态码和消息创建一个Builder
+     * @param message 消息
+     * @return Builder实例
+     */
+    public static Builder success(String message){
+        return new Builder().message(message);
+    }
+
+    /**
      * 使用成功状态码和数据创建一个Builder
      * @param data 响应数据
      * @return Builder实例
