@@ -14,79 +14,87 @@ public class LibraryAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean // 仅当不存在该类型的bean时，才会创建该bean
-    public HashUtils hashUtils(LibraryProperties properties){
+    public HashUtils hashUtils(LibraryProperties properties) {
         HashUtils hashUtils = new HashUtils();
-        if(properties.getHashPepper() != null){
-            hashUtils.setHashPepper(properties.getHashPepper());
+        if (properties.getHash().getPepper() != null) {
+            hashUtils.setHashPepper(properties.getHash().getPepper());
         }
         return hashUtils;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JwtUtils jwtUtils(LibraryProperties properties){
+    public JwtUtils jwtUtils(LibraryProperties properties) {
         JwtUtils jwtUtils = new JwtUtils();
-        if(properties.getJwtSecret() != null){
-            jwtUtils.setJwtSecret(properties.getJwtSecret());
+        if (properties.getJwt().getSecret() != null) {
+            jwtUtils.setJwtSecret(properties.getJwt().getSecret());
         }
-        jwtUtils.setExpires(properties.getJwtExpires());
+        jwtUtils.setExpires(properties.getJwt().getExpires());
         return jwtUtils;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DelayedTaskExecutor delayedTaskExecutor(){
+    public DelayedTaskExecutor delayedTaskExecutor() {
         return new DelayedTaskExecutor();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SnowflakeUtils snowflakeUtils(LibraryProperties properties){
-        return new SnowflakeUtils(properties.getMachineId());
+    public SnowflakeUtils snowflakeUtils(LibraryProperties properties) {
+        return new SnowflakeUtils(properties.getMachine().getId());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SensitiveWordUtils sensitiveWordUtils(){
+    public SensitiveWordUtils sensitiveWordUtils() {
         return SensitiveWordUtils.builder();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public MailUtils.Builder mailUtilsBuilder(CheckUtils checkUtils,LibraryProperties properties){
+    public MailUtils.Builder mailUtilsBuilder(CheckUtils checkUtils, LibraryProperties properties) {
         MailUtils.Builder builder = new MailUtils.Builder(checkUtils);
-        if(!properties.getMailHost().isEmpty()){
-            builder = builder.setHost(properties.getMailHost());
+        if (properties.getMail().getHost() != null) {
+            builder = builder.setHost(properties.getMail().getHost());
         }
-        builder = builder.setPort(properties.getMailPort());
-        builder = builder.setSsl(properties.getMailSsl());
-        builder = builder.setAuth(properties.getMailAuth());
-        if(!properties.getMailUsername().isEmpty()){
-            builder = builder.setUsername(properties.getMailUsername());
+        builder = builder.setPort(properties.getMail().getPort());
+        builder = builder.setSsl(properties.getMail().getSsl());
+        builder = builder.setAuth(properties.getMail().getAuth());
+        if (properties.getMail().getUsername() != null) {
+            builder = builder.setUsername(properties.getMail().getUsername());
         }
-        if(!properties.getMailPassword().isEmpty()){
-            builder = builder.setPassword(properties.getMailPassword());
+        if (properties.getMail().getPassword() != null) {
+            builder = builder.setPassword(properties.getMail().getPassword());
         }
-        builder = builder.setProtocol(properties.getMailProtocol());
+        builder = builder.setProtocol(properties.getMail().getProtocol());
 
         return builder;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public CheckUtils checkUtils(){
+    public CheckUtils checkUtils() {
         return new CheckUtils();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TimeUtils timeUtils(){
+    public FilesUtils filesUtils(LibraryProperties properties,
+                                 TimeUtils timeUtils,
+                                 StringUtils stringUtils){
+        return  new FilesUtils(properties,timeUtils,stringUtils);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TimeUtils timeUtils() {
         return new TimeUtils();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public StringUtils stringUtils(){
+    public StringUtils stringUtils() {
         return new StringUtils();
     }
 

@@ -1,5 +1,6 @@
 package com.chenjiabao.open.utils;
 
+import com.chenjiabao.open.utils.model.property.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,20 +16,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "chenjiabao.config")
 public class LibraryProperties {
-    // 分布式ID机器ID
-    private Long machineId = 1L;
+    // 分布式机器信息
+    private Machine machine = new Machine();
 
     // 胡椒值
-    private String hashPepper;
+    private Hash hash = new Hash();
 
-    private String mailHost;
-    private Integer mailPort = 465;
-    private Boolean mailSsl = false;
-    private Boolean mailAuth = false;
-    private String mailUsername;
-    private String mailPassword;
-    private String mailProtocol = "smtp";
+    // 邮件配置
+    private Mail mail = new Mail();
 
-    private String jwtSecret;
-    private Integer jwtExpires = 7200;
+    // JWT配置
+    private Jwt jwt = new Jwt();
+
+    // 文件上传配置
+    private File file = new File();
 }

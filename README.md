@@ -49,3 +49,14 @@ String id = snowflakeUtils.nextId();
 ```
 
 你也可以使用Spring Bean注入。
+
+## 依赖说明
+
+本库的所有依赖都被标记为可选（optional），这意味着你需要根据你使用的功能手动添加相应的依赖：
+
+- 如果使用文件上传功能（FilesUtils）：需要添加 `spring-boot-starter-web` 依赖
+- 如果使用JWT功能（JwtUtils）：需要添加 `io.jsonwebtoken:jjwt` 依赖
+- 如果使用HTTP请求功能（RequestUtils）：需要添加 `com.squareup.okhttp3:okhttp` 依赖
+- 如果使用JSON处理功能：需要添加 `com.google.code.gson:gson` 依赖
+- 如果使用邮件功能（MailUtils）：需要添加 `org.eclipse.angus:jakarta.mail` 依赖
+- 如果使用Spring Boot自动配置功能：需要添加 `spring-boot-autoconfigure` 依赖
