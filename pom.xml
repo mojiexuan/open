@@ -19,6 +19,7 @@
         <chenjiabao.okhttp.version>4.12.0</chenjiabao.okhttp.version>
         <chenjiabao.gson.version>2.11.0</chenjiabao.gson.version>
         <chenjiabao.jakarta.mail>2.0.3</chenjiabao.jakarta.mail>
+        <chenjiabao.owasp.esapi.version>2.7.0.0</chenjiabao.owasp.esapi.version>
     </properties>
 
     <name>DevTools</name>
@@ -26,7 +27,7 @@
     <url>https://github.com/majiexuan/open</url>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.4.4</version>
+    <version>0.4.5</version>
     <packaging>jar</packaging>
 
     <scm>
@@ -100,6 +101,13 @@
                 <version>${chenjiabao.jakarta.mail}</version>
             </dependency>
 
+            <!-- esapi 安全验证-->
+            <dependency>
+                <groupId>org.owasp.esapi</groupId>
+                <artifactId>esapi</artifactId>
+                <version>${chenjiabao.owasp.esapi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -165,6 +173,12 @@
             <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
         </dependency>
+
+        <!-- esapi 安全验证-->
+<!--        <dependency>-->
+<!--            <groupId>org.owasp.esapi</groupId>-->
+<!--            <artifactId>esapi</artifactId>-->
+<!--        </dependency>-->
 
         <!--        lombok-->
         <dependency>

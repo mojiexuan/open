@@ -2,7 +2,7 @@ package com.chenjiabao.open.utils;
 
 import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
 import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
-import com.chenjiabao.open.utils.controller.PublicController;
+import com.chenjiabao.open.utils.controller.StaticController;
 import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -24,8 +24,8 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public PublicController publicController(LibraryProperties properties) {
-        return new PublicController(properties);
+    public StaticController staticController(LibraryProperties properties) {
+        return new StaticController(properties);
     }
 
     @Override

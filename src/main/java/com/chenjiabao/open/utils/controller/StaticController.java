@@ -25,12 +25,12 @@ import java.util.Optional;
  * 在你的静态资源控制器类上添加类似此注解
  * @author 陈佳宝 mail@chenjiabao.com
  */
-public class PublicController {
+public class StaticController {
 
     private final LibraryProperties properties;
 
     @Autowired
-    public PublicController(LibraryProperties properties) {
+    public StaticController(LibraryProperties properties) {
         this.properties = properties;
     }
 
