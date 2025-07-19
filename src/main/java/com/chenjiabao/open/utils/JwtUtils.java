@@ -85,6 +85,15 @@ public class JwtUtils {
     }
 
     /**
+     * 获取Token声明中的用户唯一标识
+     * @param token JWT Token
+     * @return 用户唯一标识
+     */
+    public String getSubject(String token) {
+        return parseToken(token).getSubject();
+    }
+
+    /**
      * 验证Token有效性
      * @param token JWT Token
      * @return 是否有效

@@ -1,17 +1,16 @@
 package com.chenjiabao.open.utils;
 
+import com.chenjiabao.open.utils.html.MailTemplate;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.stereotype.Component;
-
+import java.util.Map;
 import java.util.Properties;
 
 /**
  * 邮件发送工具类
  * @author ChenJiaBao
  */
-@Component
 public class MailUtils {
 
     private final Session session;
@@ -19,9 +18,11 @@ public class MailUtils {
     private String to;
     private String subject;
     private String content;
+    private final String brand;
 
-    private MailUtils(Session session){
+    private MailUtils(Session session,String brand){
         this.session = session;
+        this.brand = brand;
     }
 
     public MailUtils setFrom(String address){
@@ -39,6 +40,11 @@ public class MailUtils {
         return this;
     }
 
+    /**
+     * 设置内容
+     * @param content html内容
+     * @return MailUtils
+     */
     public MailUtils setContent(String content){
         this.content = content;
         return this;
@@ -67,6 +73,74 @@ public class MailUtils {
     }
 
     /**
+     * 发送验证码
+     * @param code 验证码
+     * @return 是否发送成功
+     */
+    public boolean sendCode(String code) {
+        try{
+            this.setContent(
+                    renderTemplate(
+                            MailTemplate.getCodeTemplate(),
+                            Map.of("code", code, "brand", this.brand)
+                    )
+            );
+            this.send();
+            return true;
+        } catch (Exception ignore) {
+            return false;
+        }
+    }
+
+    /**
+     * 发送系统通知
+     * @param title 标题
+     * @param call 称呼
+     * @param content 内容
+     * @param writer 作者
+     * @return 是否发送成功
+     */
+    public boolean sendSystemNotice(String title,String call,String content,String writer){
+        try{
+            this.setContent(renderTemplate(MailTemplate.getSystemNoticeTemplate(), Map.of(
+                    "title", title,
+                    "call", call,
+                    "content", content,
+                    "writer", writer,
+                    "brand", this.brand
+            )));
+            this.send();
+            return true;
+        }catch (Exception ignore) {
+            return false;
+        }
+    }
+
+
+    /**
+     * 渲染模板
+     * @param html 模板
+     * @param body 模板参数
+     * @return 渲染后的html
+     */
+    public String renderTemplate(String html, Map<String,String> body){
+        if (html == null) {
+            return "";
+        }
+        if (body == null) {
+            return html;
+        }
+        StringBuffer htmlText = new StringBuffer(html);
+        body.forEach((k,v)->{
+            int start = htmlText.indexOf("{" + k + "}");
+            if (start != -1) {
+                htmlText.replace(start, start + k.length() + 2, v); // 替换占位符
+            }
+        });
+        return htmlText.toString();
+    }
+
+    /**
      * 邮件配置构建器
      */
     public static class Builder {
@@ -78,6 +152,7 @@ public class MailUtils {
         private String username;
         private String password;
         private String protocol = "smtp";
+        private String brand = "码界轩";
 
         public Builder(CheckUtils checkUtils) {
             this.checkUtils = checkUtils;
@@ -163,6 +238,19 @@ public class MailUtils {
         }
 
         /**
+         * 设置邮件品牌
+         * @param brand 品牌名称
+         * @return Builder实例
+         */
+        public Builder setBrand(String brand) {
+            if(brand == null){
+                throw new IllegalArgumentException("品牌不能为空");
+            }
+            this.brand = brand;
+            return this;
+        }
+
+        /**
          * 构建MailUtils实例
          * @return MailUtils实例
          */
@@ -202,7 +290,7 @@ public class MailUtils {
                 session = Session.getInstance(props);
             }
             
-            return new MailUtils(session);
+            return new MailUtils(session,brand);
         }
     }
 }

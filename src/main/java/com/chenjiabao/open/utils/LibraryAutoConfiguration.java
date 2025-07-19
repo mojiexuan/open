@@ -119,6 +119,15 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    public MailUtils mailUtils(MailUtils.Builder builder,LibraryProperties properties) {
+        if(properties.getMail().getUsername() != null){
+            return builder.build().setFrom(properties.getMail().getUsername());
+        }
+        return builder.build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public CheckUtils checkUtils() {
         return new CheckUtils();
     }

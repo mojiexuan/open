@@ -20,4 +20,5 @@ public class Mail {
     private String username;
     private String password;
     private String protocol = "smtp";
+    private MailTemplate template;
 }
