@@ -4,7 +4,7 @@ package com.chenjiabao.open.utils.html;
  * 邮件模板
  * @author ChenJiaBao
  */
-public class MailTemplate {
+public class MailHtmlTemplate {
 
     /**
      * 获取邮件验证码模板

@@ -1,6 +1,6 @@
 package com.chenjiabao.open.utils;
 
-import com.chenjiabao.open.utils.html.MailTemplate;
+import com.chenjiabao.open.utils.html.MailHtmlTemplate;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -81,7 +81,7 @@ public class MailUtils {
         try{
             this.setContent(
                     renderTemplate(
-                            MailTemplate.getCodeTemplate(),
+                            MailHtmlTemplate.getCodeTemplate(),
                             Map.of("code", code, "brand", this.brand)
                     )
             );
@@ -102,7 +102,7 @@ public class MailUtils {
      */
     public boolean sendSystemNotice(String title,String call,String content,String writer){
         try{
-            this.setContent(renderTemplate(MailTemplate.getSystemNoticeTemplate(), Map.of(
+            this.setContent(renderTemplate(MailHtmlTemplate.getSystemNoticeTemplate(), Map.of(
                     "title", title,
                     "call", call,
                     "content", content,

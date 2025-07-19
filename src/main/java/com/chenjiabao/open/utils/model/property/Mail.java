@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * @author ChenJiaBao
@@ -20,5 +21,6 @@ public class Mail {
     private String username;
     private String password;
     private String protocol = "smtp";
+    @NestedConfigurationProperty
     private MailTemplate template;
 }
