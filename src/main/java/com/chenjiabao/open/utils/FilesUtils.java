@@ -50,16 +50,6 @@ public class FilesUtils {
 
     /**
      * 判断文件是否存在
-     * @param directory 文件目录
-     */
-    @Deprecated(since = "0.4.9", forRemoval = true)
-    public boolean isHasFile(File directory) {
-        //exists()方法可以校验是否存在该文件，防止抛出异常
-        return directory.exists();
-    }
-
-    /**
-     * 判断文件是否存在
      * @param file 文件
      * @return 是否存在
      */

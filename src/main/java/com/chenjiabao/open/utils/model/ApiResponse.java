@@ -149,18 +149,35 @@ public class ApiResponse {
         }
 
         /**
-         * 构建ApiResponse实例
+         * 获取ApiResponse实例
          * @return ApiResponse实例
+         */
+        public ApiResponse get(){
+            return new ApiResponse(code.getValue(), message, data);
+        }
+
+        /**
+         * 构建ResponseEntity<ApiResponse>
+         * @return ResponseEntity<ApiResponse>
          */
         public ResponseEntity<ApiResponse> build() {
             int codeValue = code.getValue();
             String msg = message != null ? message : code.getMessage();
+            return build(new ApiResponse(codeValue, msg, data));
+        }
+
+        /**
+         * 构建ResponseEntity<ApiResponse>
+         * @param apiResponse ApiResponse实例
+         * @return ResponseEntity<ApiResponse>
+         */
+        public ResponseEntity<ApiResponse> build(ApiResponse apiResponse){
             return ResponseEntity
-                    .status(codeValue)
+                    .status(apiResponse.getCode())
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Access-Control-Allow-Credentials", "true")
                     .header("Access-Control-Allow-Origin", "*")
-                    .body(new ApiResponse(codeValue, msg, data));
+                    .body(apiResponse);
         }
     }
 }
