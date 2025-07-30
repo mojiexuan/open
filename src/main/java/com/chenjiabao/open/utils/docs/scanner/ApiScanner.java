@@ -7,10 +7,10 @@ import com.chenjiabao.open.utils.docs.annotation.Tag;
 import com.chenjiabao.open.utils.docs.model.ApiDefinition;
 import com.chenjiabao.open.utils.docs.model.ApiGroup;
 import com.chenjiabao.open.utils.docs.model.ApiParameter;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -59,7 +59,7 @@ public class ApiScanner implements ApplicationListener<ApplicationReadyEvent> {
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
         // 应用启动完成后启动扫描线程
         executor.submit(()->{
             log.info("接口文档：开始扫描接口");
@@ -282,7 +282,7 @@ public class ApiScanner implements ApplicationListener<ApplicationReadyEvent> {
         }
 
         // @NotNull
-        if (parameter.isAnnotationPresent(NotNull.class)) {
+        if (parameter.isAnnotationPresent(Nonnull.class)) {
             apiParam.setRequired(true);
         }
 

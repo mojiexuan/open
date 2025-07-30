@@ -43,7 +43,7 @@ public class LibraryProperties {
 
     // 静态资源
     @NestedConfigurationProperty
-    private Static statics = new Static();
+    private Assets assets = new Assets();
 
     // 开放Api文档
     @NestedConfigurationProperty

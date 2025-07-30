@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Static {
-    private Boolean enable = false;
+public class Assets {
+    private Boolean enabled = false;
     private String path = "public";
 }

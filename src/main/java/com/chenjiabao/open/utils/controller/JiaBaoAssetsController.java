@@ -1,9 +1,9 @@
 package com.chenjiabao.open.utils.controller;
 
 import com.chenjiabao.open.utils.LibraryProperties;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.ClientAbortException;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.MimeType;
@@ -25,19 +25,19 @@ import java.util.Optional;
  * 在你的静态资源控制器类上添加类似此注解
  * @author 陈佳宝 mail@chenjiabao.com
  */
-public class JiaBaoStaticController {
+public class JiaBaoAssetsController {
 
     private final LibraryProperties properties;
 
     @Autowired
-    public JiaBaoStaticController(LibraryProperties properties) {
+    public JiaBaoAssetsController(LibraryProperties properties) {
         this.properties = properties;
     }
 
-    public ResponseEntity<StreamingResponseBody> getStaticPublic(HttpServletRequest req) {
+    public ResponseEntity<StreamingResponseBody> getAssetsPublic(HttpServletRequest req) {
         String requestUri = req.getRequestURI();
         String contextPath = req.getContextPath();
-        int publicPathStart = contextPath.length() + ("/"+properties.getStatics().getPath()+"/").length();
+        int publicPathStart = contextPath.length() + ("/"+properties.getAssets().getPath()+"/").length();
         if (publicPathStart > requestUri.length()) {
             return ResponseEntity.notFound().build();
         }
@@ -46,7 +46,7 @@ public class JiaBaoStaticController {
                 .replaceAll("/+", "/");
 
         // 路径安全检查
-        Path publicDir = Paths.get(System.getProperty("user.dir"), properties.getStatics().getPath()).normalize();
+        Path publicDir = Paths.get(System.getProperty("user.dir"), properties.getAssets().getPath()).normalize();
         Path resolvedPath = publicDir.resolve(requestedPath).normalize();
 
         try{
@@ -146,7 +146,7 @@ public class JiaBaoStaticController {
         }
     }
 
-    @NotNull
+    @Nonnull
     private static StreamingResponseBody getStreamingResponseBody(long start, long end, Path resolvedPath) {
         final long finalStart = start;
         final long finalEnd = end;

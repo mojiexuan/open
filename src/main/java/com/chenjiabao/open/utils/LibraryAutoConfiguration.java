@@ -3,7 +3,7 @@ package com.chenjiabao.open.utils;
 import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
 import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
 import com.chenjiabao.open.utils.controller.JiaBaoDocController;
-import com.chenjiabao.open.utils.controller.JiaBaoStaticController;
+import com.chenjiabao.open.utils.controller.JiaBaoAssetsController;
 import com.chenjiabao.open.utils.docs.scanner.ApiScanner;
 import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,9 +39,9 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "chenjiabao.config.static", name = "enabled", havingValue = "true")
-    public JiaBaoStaticController staticController(LibraryProperties properties) {
-        return new JiaBaoStaticController(properties);
+    @ConditionalOnProperty(prefix = "chenjiabao.config.assets", name = "enabled", havingValue = "true")
+    public JiaBaoAssetsController jiabaoAssetsController(LibraryProperties properties) {
+        return new JiaBaoAssetsController(properties);
     }
 
     @Override

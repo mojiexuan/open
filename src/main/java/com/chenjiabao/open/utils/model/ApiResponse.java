@@ -153,7 +153,20 @@ public class ApiResponse {
          * @return ApiResponse实例
          */
         public ApiResponse get(){
+            return get(code,message);
+        }
+
+        /**
+         * 获取ApiResponse实例
+         * @param code 状态码
+         * @return ApiResponse实例
+         */
+        public ApiResponse get(ResponseCode code,String message){
             return new ApiResponse(code.getValue(), message, data);
+        }
+
+        public ApiResponse get(ResponseCode code){
+            return get(code,code.getMessage());
         }
 
         /**

@@ -1,8 +1,8 @@
 package com.chenjiabao.open.utils.resolver;
 
 import com.chenjiabao.open.utils.annotation.RequestAttributeParam;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,7 +25,7 @@ public class RequestAttributeParamArgumentResolver implements HandlerMethodArgum
     public Object resolveArgument(
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
-            @NotNull NativeWebRequest webRequest,
+            @Nonnull NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) throws Exception {
         // 获取注解
