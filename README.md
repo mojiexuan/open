@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.4.7</version>
+    <version>0.4.9</version>
  </dependency>
 ```
 
@@ -115,11 +115,11 @@ public void example(){
 `error(RequestCode code)`或`error(RequestCode code, String message)`
 
 ```java
-import com.chenjiabao.open.utils.enums.RequestCode;
+import com.chenjiabao.open.utils.enums.ResponseCode;
 import com.chenjiabao.open.utils.model.ApiResponse;
 
 public void example() {
-    ApiResponse.error(RequestCode.CODE_406,"参数异常").build();
+    ApiResponse.error(ResponseCode.CODE_406, "参数异常").build();
 }
 ```
 
@@ -414,7 +414,7 @@ public class Example {
         // 删除文件
         filesUtils.deleteFile();
         // 检查文件是否存在奶
-        filesUtils.isHasFile();
+        filesUtils.existFile();
     }
 }
 ```

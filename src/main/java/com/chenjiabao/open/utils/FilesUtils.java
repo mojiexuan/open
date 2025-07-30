@@ -1,7 +1,9 @@
 package com.chenjiabao.open.utils;
 
-import com.chenjiabao.open.utils.enums.RequestCode;
+import com.chenjiabao.open.utils.enums.ResponseCode;
 import com.chenjiabao.open.utils.model.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import java.util.ArrayList;
  */
 public class FilesUtils {
 
+    Logger logger = LoggerFactory.getLogger(FilesUtils.class);
     //项目目录
     public static String classesPath = System.getProperty("user.dir");
     private final LibraryProperties properties;
@@ -32,22 +35,63 @@ public class FilesUtils {
     /**
      * 创建文件目录及父目录
      */
-    public boolean createDirectory(File directory) {
-        if (!isHasFile(directory)) {
-            return directory.mkdirs();
-        } else {
-            return true;
+    public boolean createDirectory(File dir) {
+        if(dir.isDirectory()){
+            if(!dir.exists()){
+                return dir.mkdirs();
+            }else{
+                return true;
+            }
+        }else {
+            File parentFile = dir.getParentFile();
+            return createDirectory(parentFile);
         }
     }
 
     /**
      * 判断文件是否存在
-     *
      * @param directory 文件目录
      */
+    @Deprecated(since = "0.4.9", forRemoval = true)
     public boolean isHasFile(File directory) {
         //exists()方法可以校验是否存在该文件，防止抛出异常
         return directory.exists();
+    }
+
+    /**
+     * 判断文件是否存在
+     * @param file 文件
+     * @return 是否存在
+     */
+    public boolean existFile(File file) {
+        return file.exists();
+    }
+
+    /**
+     * 判断文件是否存在
+     * @param path 文件路径
+     * @return 是否存在
+     */
+    public boolean existFile(String path) {
+        return existFile(Paths.get(path).toFile());
+    }
+
+    /**
+     * 判断目录是否存在
+     * @param file 目录
+     * @return 是否存在
+     */
+    public boolean existDir(File file){
+        return file.exists() && file.isDirectory();
+    }
+
+    /**
+     * 判断目录是否存在
+     * @param path 目录路径
+     * @return 是否存在
+     */
+    public boolean existDir(String path) {
+        return existDir(Paths.get(path).toFile());
     }
 
     /**
@@ -64,7 +108,7 @@ public class FilesUtils {
             //创建文件
             flag = file.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("创建文件失败！");
             flag = false;
         }
 
@@ -91,7 +135,8 @@ public class FilesUtils {
 
         try {
             fr = new FileReader(file);
-            br = new BufferedReader(fr);//构造方法需要一个FileReader对象
+            //构造方法需要一个FileReader对象
+            br = new BufferedReader(fr);
 
             String data = null;
             while ((data = br.readLine()) != null) {
@@ -99,8 +144,9 @@ public class FilesUtils {
                 arrayList.add(data);
             }
         } catch (IOException e) {
-            arrayList.set(0, "-1");//获取失败！
-            e.printStackTrace();
+            //获取失败！
+            arrayList.set(0, "-1");
+            logger.error("读取文件失败！");
         } finally {
             //关闭流
             closeFile(br);
@@ -127,7 +173,7 @@ public class FilesUtils {
             bw.newLine(); // 换行
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("写入文件失败！");
             return false;
         } finally {
             closeFile(bw);
@@ -146,7 +192,7 @@ public class FilesUtils {
             fileReader.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("关闭流失败！");
             return false;
         }
     }
@@ -159,7 +205,7 @@ public class FilesUtils {
             bufferedReader.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("关闭流失败！");
             return false;
         }
     }
@@ -172,7 +218,7 @@ public class FilesUtils {
             fileWriter.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("关闭流失败！");
             return false;
         }
     }
@@ -185,7 +231,7 @@ public class FilesUtils {
             bufferedWriter.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("关闭流失败！");
             return false;
         }
     }
@@ -198,30 +244,30 @@ public class FilesUtils {
      */
     public ApiResponse checkFile(MultipartFile file) {
         if (file.isEmpty()) {
-            return ApiResponse.error(RequestCode.CODE_406, "文件为空").build();
+            return ApiResponse.error(ResponseCode.CODE_406, "文件为空").getBody();
         }
 
         //获取文件名
         String fileName = file.getOriginalFilename();
 
         if (fileName == null || !fileName.contains(".")) {
-            return ApiResponse.error(RequestCode.CODE_406, "文件名异常").build();
+            return ApiResponse.error(ResponseCode.CODE_406, "文件名异常").getBody();
         }
 
         //获取文件后缀
         String fileSuffix = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         //判断是否支持的类型
         if (!properties.getFile().getFormat().contains(fileSuffix)) {
-            return ApiResponse.error(RequestCode.CODE_406, "文件格式不支持").build();
+            return ApiResponse.error(ResponseCode.CODE_406, "文件格式不支持").getBody();
         }
 
         long size = file.getSize();
         // 10MB
         if (size > properties.getFile().getMaxSize()) {
-            return ApiResponse.error(RequestCode.CODE_406, "文件过大").build();
+            return ApiResponse.error(ResponseCode.CODE_406, "文件过大").getBody();
         }
 
-        return ApiResponse.success().build();
+        return ApiResponse.success().getBody();
     }
 
     /**

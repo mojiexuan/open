@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Mail {
+    private boolean enabled = true;
     private String host;
     private Integer port = 456;
     private Boolean ssl = false;

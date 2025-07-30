@@ -2,9 +2,12 @@ package com.chenjiabao.open.utils;
 
 import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
 import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
-import com.chenjiabao.open.utils.controller.StaticController;
+import com.chenjiabao.open.utils.controller.JiaBaoDocController;
+import com.chenjiabao.open.utils.controller.JiaBaoStaticController;
+import com.chenjiabao.open.utils.docs.scanner.ApiScanner;
 import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -24,8 +27,21 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public StaticController staticController(LibraryProperties properties) {
-        return new StaticController(properties);
+    public JiaBaoDocController jiaBaoDocController(){
+        return new JiaBaoDocController();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApiScanner apiScanner(){
+        return new ApiScanner();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.static", name = "enabled", havingValue = "true")
+    public JiaBaoStaticController staticController(LibraryProperties properties) {
+        return new JiaBaoStaticController(properties);
     }
 
     @Override
@@ -50,6 +66,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.api", name = "enabled", havingValue = "true")
     public ApiVersionAspect apiVersionAspect(
             LibraryProperties properties,
             ApplicationContext applicationContext,
@@ -59,6 +76,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean // 仅当不存在该类型的bean时，才会创建该bean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.hash", name = "enabled", havingValue = "true")
     public HashUtils hashUtils(LibraryProperties properties) {
         HashUtils hashUtils = new HashUtils();
         if (properties.getHash().getPepper() != null) {
@@ -69,6 +87,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.jwt", name = "enabled", havingValue = "true")
     public JwtUtils jwtUtils(LibraryProperties properties) {
         JwtUtils jwtUtils = new JwtUtils();
         if (properties.getJwt().getSecret() != null) {
@@ -98,6 +117,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.mail", name = "enabled", havingValue = "true")
     public MailUtils.Builder mailUtilsBuilder(CheckUtils checkUtils, LibraryProperties properties) {
         MailUtils.Builder builder = new MailUtils.Builder(checkUtils);
         if (properties.getMail().getHost() != null) {
@@ -119,6 +139,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.mail", name = "enabled", havingValue = "true")
     public MailUtils mailUtils(MailUtils.Builder builder,LibraryProperties properties) {
         if(properties.getMail().getUsername() != null){
             return builder.build().setFrom(properties.getMail().getUsername());
@@ -134,6 +155,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "chenjiabao.config.file", name = "enabled", havingValue = "true")
     public FilesUtils filesUtils(LibraryProperties properties,
                                  TimeUtils timeUtils,
                                  StringUtils stringUtils){

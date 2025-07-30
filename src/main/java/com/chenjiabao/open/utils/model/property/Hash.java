@@ -13,5 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Hash {
+    private boolean enabled = true;
     private String pepper;
 }

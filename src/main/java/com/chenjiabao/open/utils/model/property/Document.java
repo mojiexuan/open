@@ -12,8 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Jwt {
+public class Document {
     private boolean enabled = true;
-    private String secret;
-    private Integer expires = 7200;
+    private String path = "/docs";
 }

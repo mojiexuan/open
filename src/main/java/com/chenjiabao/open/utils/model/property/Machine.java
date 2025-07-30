@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Machine {
+    private boolean enabled = true;
     // 分布式机器id
     private Long id = 1L;
 }

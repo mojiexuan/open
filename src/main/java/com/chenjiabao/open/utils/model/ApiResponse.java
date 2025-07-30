@@ -1,9 +1,11 @@
 package com.chenjiabao.open.utils.model;
 
 import com.chenjiabao.open.utils.TimeUtils;
-import com.chenjiabao.open.utils.enums.RequestCode;
+import com.chenjiabao.open.utils.enums.ResponseCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class ApiResponse {
      * @param code 状态码
      * @return Builder实例
      */
-    public static Builder builder(RequestCode code) {
+    public static Builder builder(ResponseCode code) {
         return new Builder().code(code);
     }
 
@@ -51,8 +53,8 @@ public class ApiResponse {
      * @param message 消息
      * @return Builder实例
      */
-    public static Builder success(String message){
-        return new Builder().message(message);
+    public static ResponseEntity<ApiResponse> success(String message){
+        return new Builder().message(message).build();
     }
 
     /**
@@ -60,16 +62,16 @@ public class ApiResponse {
      * @param data 响应数据
      * @return Builder实例
      */
-    public static Builder success(Map<String, Object> data) {
-        return new Builder().data(data);
+    public static ResponseEntity<ApiResponse> success(Map<String, Object> data) {
+        return new Builder().data(data).build();
     }
 
     /**
      * 使用成功状态码创建一个Builder
      * @return Builder实例
      */
-    public static Builder success() {
-        return new Builder();
+    public static ResponseEntity<ApiResponse> success() {
+        return new Builder().build();
     }
 
     /**
@@ -77,8 +79,8 @@ public class ApiResponse {
      * @param code 错误状态码
      * @return Builder实例
      */
-    public static Builder error(RequestCode code) {
-        return new Builder().code(code);
+    public static ResponseEntity<ApiResponse> error(ResponseCode code) {
+        return new Builder().code(code).build();
     }
 
     /**
@@ -87,15 +89,15 @@ public class ApiResponse {
      * @param message 自定义错误消息
      * @return Builder实例
      */
-    public static Builder error(RequestCode code, String message) {
-        return new Builder().code(code).message(message);
+    public static ResponseEntity<ApiResponse> error(ResponseCode code, String message) {
+        return new Builder().code(code).message(message).build();
     }
 
     /**
      * ApiResponse的Builder类
      */
     public static class Builder {
-        private RequestCode code = RequestCode.CODE_200;
+        private ResponseCode code = ResponseCode.CODE_200;
         private String message = null;
         private Map<String, Object> data = null;
 
@@ -107,7 +109,7 @@ public class ApiResponse {
          * @param code 状态码
          * @return Builder实例
          */
-        public Builder code(RequestCode code) {
+        public Builder code(ResponseCode code) {
             this.code = code;
             return this;
         }
@@ -150,10 +152,15 @@ public class ApiResponse {
          * 构建ApiResponse实例
          * @return ApiResponse实例
          */
-        public ApiResponse build() {
+        public ResponseEntity<ApiResponse> build() {
             int codeValue = code.getValue();
             String msg = message != null ? message : code.getMessage();
-            return new ApiResponse(codeValue, msg, data);
+            return ResponseEntity
+                    .status(codeValue)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Access-Control-Allow-Credentials", "true")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .body(new ApiResponse(codeValue, msg, data));
         }
     }
 }
