@@ -1,5 +1,9 @@
 package com.chenjiabao.open.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.regex.Pattern;
 
 /**
@@ -26,6 +30,73 @@ public class CheckUtils {
     // 中国大陆身份证号正则（简单版）
     private static final Pattern ID_CARD_PATTERN =
             Pattern.compile("^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}[0-9Xx]$");
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final LibraryProperties properties;
+
+    @Autowired
+    public CheckUtils(LibraryProperties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * 验证密码是否合法
+     * @param password 密码原文
+     * @return 是否合法密码
+     */
+    public boolean isValidPassword(String password){
+        return isValidPassword(
+                password,
+                properties.getCheck().getMin(),
+                properties.getCheck().getMax(),
+                properties.getCheck().getLevel(),
+                properties.getCheck().getSpecialChars()
+                );
+    }
+
+    /**
+     * 验证密码是否合法
+     * @param password 密码原文
+     * @param minLength 密码最小长度
+     * @param maxLength 密码最大长度
+     * @param level 密码强度等级
+     * @param allowedSpecialChars 允许的特殊字符
+     * @return 是否合法密码
+     */
+    public boolean isValidPassword(String password, int minLength, int maxLength,
+                                   int level, String allowedSpecialChars){
+        if(!isLengthInRange(password,minLength,maxLength)){
+            return false;
+        }
+        if(level > 3 && (properties.getCheck().getSpecialChars() == null ||
+                properties.getCheck().getSpecialChars().trim().isEmpty())){
+            logger.warn("密码强度校验未配置特殊字符，无法进行特殊字符校验");
+            return false;
+        }
+        return switch (level) {
+            case 1 ->
+                // 至少包含数字
+                    password.matches(".*\\d.*");
+            case 2 ->
+                // 包含数字和字母
+                    password.matches(".*\\d.*") && password.matches(".*[a-zA-Z].*");
+            case 3 ->
+                // 包含数字并同时包含大小写字母
+                    password.matches(".*\\d.*")
+                            && password.matches(".*[a-z].*")
+                            && password.matches(".*[A-Z].*");
+            case 4 ->
+                // 在3的基础上增加特殊字符
+                    password.matches(".*\\d.*")
+                            && password.matches(".*[a-z].*")
+                            && password.matches(".*[A-Z].*")
+                            && Pattern.compile('[' + Pattern.quote(allowedSpecialChars) + ']').matcher(password).find();
+            default -> {
+                logger.error("密码强度级别超出范围: {}", level);
+                yield false;
+            }
+        };
+    }
 
     /**
      * 是否空参检查

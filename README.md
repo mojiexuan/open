@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.5.4</version>
+    <version>0.5.5</version>
  </dependency>
 ```
 

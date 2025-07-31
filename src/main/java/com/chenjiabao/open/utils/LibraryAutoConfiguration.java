@@ -149,8 +149,9 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public CheckUtils checkUtils() {
-        return new CheckUtils();
+    @ConditionalOnProperty(prefix = "chenjiabao.config.check", name = "enabled", havingValue = "true")
+    public CheckUtils checkUtils(LibraryProperties properties) {
+        return new CheckUtils(properties);
     }
 
     @Bean

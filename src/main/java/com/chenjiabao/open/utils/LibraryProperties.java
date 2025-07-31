@@ -48,4 +48,8 @@ public class LibraryProperties {
     // 开放Api文档
     @NestedConfigurationProperty
     private Document docs = new Document();
+
+    // 检查器
+    @NestedConfigurationProperty
+    private Check check = new Check();
 }
