@@ -1,9 +1,6 @@
 package com.chenjiabao.open.utils;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 敏感词检测
@@ -12,7 +9,7 @@ import java.util.Map;
 public class SensitiveWordUtils {
 
     // 敏感词库树形结构（DFA结构）
-    private Map<Character, Object> sensitiveWordMap = new HashMap<>();
+    private volatile Map<Character, Object> sensitiveWordMap = new HashMap<>();
     // 结束标记常量，提高可读性
     private static final Character END_FLAG = '\0';
 
@@ -25,6 +22,14 @@ public class SensitiveWordUtils {
      * @return this
      */
     public SensitiveWordUtils init(List<String> words) {
+        if (words == null) {
+            return this;
+        }
+        this.sensitiveWordMap = buildWordTree(words);
+        return this;
+    }
+
+    private synchronized Map<Character, Object> buildWordTree(List<String> words) {
         // 使用LinkedHashMap保证插入顺序，避免哈希冲突导致的误判
         Map<Character, Object> root = new LinkedHashMap<>();
         for (String word : words) {
@@ -51,8 +56,7 @@ public class SensitiveWordUtils {
                 }
             }
         }
-        this.sensitiveWordMap = root;
-        return this;
+        return root;
     }
 
     /**
@@ -61,7 +65,7 @@ public class SensitiveWordUtils {
      * @return true表示存在敏感词
      */
     public boolean contains(String txt) {
-        if (txt == null || txt.isEmpty()) {
+        if (txt == null || txt.isEmpty() || sensitiveWordMap.isEmpty()) {
             return false;
         }
 
@@ -108,6 +112,29 @@ public class SensitiveWordUtils {
         }
         // 未完整匹配敏感词
         return 0;
+    }
+
+    /**
+     * 替换敏感词
+     * @param txt 原始文本
+     * @param replacement 替换字符
+     * @return 处理后的文本
+     */
+    public String replace(String txt, char replacement) {
+        if (txt == null || txt.isEmpty()) {
+            return txt;
+        }
+
+        char[] chars = txt.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            int length = checkWord(txt, i);
+            if (length > 0) {
+                Arrays.fill(chars, i, i + length, replacement);
+                // 跳过已处理部分
+                i += length - 1;
+            }
+        }
+        return new String(chars);
     }
 
     public static SensitiveWordUtils builder() {

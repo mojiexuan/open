@@ -2,6 +2,7 @@ package com.chenjiabao.open.utils.model;
 
 import com.chenjiabao.open.utils.TimeUtils;
 import com.chenjiabao.open.utils.enums.ResponseCode;
+import com.chenjiabao.open.utils.model.property.Time;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.MediaType;
@@ -12,15 +13,19 @@ import java.util.Map;
 
 /**
  * 接口返回类
+ * <p>
+ * 该类已被废弃，建议使用 {@link BaoServerResponse} 类。
+ *
  * @author 陈佳宝 mail@chenjiabao.com
  */
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL) // 不序列化空属性
+@Deprecated(since = "0.6.1",forRemoval = true)
 public class ApiResponse {
     private int code = 200;
     private String message = "成功";
     private Map<String, Object> data = null;
-    private String time = new TimeUtils().getNowTime();
+    private final String time = new TimeUtils(new Time()).getNowTime();
 
     private ApiResponse() {
     }
@@ -188,8 +193,6 @@ public class ApiResponse {
             return ResponseEntity
                     .status(apiResponse.getCode())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header("Access-Control-Allow-Credentials", "true")
-                    .header("Access-Control-Allow-Origin", "*")
                     .body(apiResponse);
         }
     }

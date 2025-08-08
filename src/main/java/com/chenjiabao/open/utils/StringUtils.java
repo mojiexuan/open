@@ -27,22 +27,16 @@ public class StringUtils {
     /**
      * 判断字符串是否为空
      */
-    public boolean isStringEmpty(String string) {
-        return string == null || string.isEmpty() || string.contains(" ");
+    public boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 
     /**
-     * 判断字符串是否为空
-     *
-     * @param isContains 是否校验空格，为true时若字符串中存在空格将返回true
+     * 判断字符串是否非空
+     * @param str 字符串
      */
-    public boolean isStringEmpty(String string, boolean isContains) {
-        if (isContains) {
-            return string == null || string.isEmpty() || string.contains(" ");
-        } else {
-            return string == null || string.isEmpty();
-        }
-
+    public boolean isNotEmpty(String str){
+        return !isEmpty(str);
     }
 
     /**
@@ -135,7 +129,7 @@ public class StringUtils {
         int unitIndex = (int) (Math.log(bytes) / Math.log(1024));
         double size = bytes / Math.pow(1024, unitIndex);
 
-        // 确保最小值 0.01（例如 10字节 → 0.01KB）
+        // 确保最小值 0.01（例如 10 字节 → 0.01KB）
         if (size < 0.01 && unitIndex > 0) {
             unitIndex--;
             size = bytes / Math.pow(1024, unitIndex);
@@ -145,6 +139,18 @@ public class StringUtils {
         // 向上取整确保最小值
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format(size) + " " + units[unitIndex];
+    }
+
+    /**
+     * 隐藏部分手机号
+     * @param phone 手机号
+     * @return 隐藏部分后的手机号
+     */
+    public String maskPhone(String phone){
+        if(isEmpty(phone) || phone.length() < 7){
+            return phone;
+        }
+        return phone.substring(0,3) + "****" + phone.substring(7);
     }
 
 }

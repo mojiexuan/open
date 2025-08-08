@@ -19,7 +19,7 @@ public class Api {
     private String accessControlAllowOrigin = "*";
     private List<String> accessControlAllowMethods = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS");
     private List<String> accessControlAllowHeaders = List.of("Content-Type", "Authorization");
-    private boolean accessControlAllowCredentials = true;
+//    private boolean accessControlAllowCredentials = true;
     private int accessControlMaxAge = 86400;
 
     public String getAccessControlAllowHeaders() {

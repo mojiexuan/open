@@ -1,9 +1,14 @@
 package com.chenjiabao.open.utils.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * HTTP请求结果
  * @author ChenJiaBao
  */
+@Getter
+@Setter
 public class HttpResponse<T> {
     private int code;
     private String msg;
@@ -23,27 +28,4 @@ public class HttpResponse<T> {
         this.data = data;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }

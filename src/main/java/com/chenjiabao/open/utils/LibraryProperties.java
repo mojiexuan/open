@@ -52,4 +52,8 @@ public class LibraryProperties {
     // 检查器
     @NestedConfigurationProperty
     private Check check = new Check();
+
+    // 时间
+    @NestedConfigurationProperty
+    private Time time = new Time();
 }

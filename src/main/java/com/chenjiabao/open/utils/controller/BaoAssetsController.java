@@ -1,10 +1,9 @@
 package com.chenjiabao.open.utils.controller;
 
-import com.chenjiabao.open.utils.LibraryProperties;
+import com.chenjiabao.open.utils.model.property.Assets;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.MimeType;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -21,23 +20,23 @@ import java.util.Optional;
  * 静态资源控制器
  * 拦截外部静态资源访问，拼接本地系统路径并返回文件
  * 流式传输，性能高效，支持视频进度条拖拽
+ * <p>
  * // @RequestMapping(value = "/public/**",method = { RequestMethod.GET,RequestMethod.HEAD })
  * 在你的静态资源控制器类上添加类似此注解
+ *
  * @author 陈佳宝 mail@chenjiabao.com
  */
-public class JiaBaoAssetsController {
+public record BaoAssetsController(Assets assets) {
 
-    private final LibraryProperties properties;
-
-    @Autowired
-    public JiaBaoAssetsController(LibraryProperties properties) {
-        this.properties = properties;
-    }
-
+    /**
+     * 获取静态资源
+     * @param req 请求
+     * @return 响应
+     */
     public ResponseEntity<StreamingResponseBody> getAssetsPublic(HttpServletRequest req) {
         String requestUri = req.getRequestURI();
         String contextPath = req.getContextPath();
-        int publicPathStart = contextPath.length() + ("/"+properties.getAssets().getPath()+"/").length();
+        int publicPathStart = contextPath.length() + ("/" + assets.getPath() + "/").length();
         if (publicPathStart > requestUri.length()) {
             return ResponseEntity.notFound().build();
         }
@@ -46,10 +45,10 @@ public class JiaBaoAssetsController {
                 .replaceAll("/+", "/");
 
         // 路径安全检查
-        Path publicDir = Paths.get(System.getProperty("user.dir"), properties.getAssets().getPath()).normalize();
+        Path publicDir = Paths.get(System.getProperty("user.dir"), assets.getPath()).normalize();
         Path resolvedPath = publicDir.resolve(requestedPath).normalize();
 
-        try{
+        try {
             // 解析符号链接的真实路径
             Path realPath = resolvedPath.toRealPath();
             if (!realPath.startsWith(publicDir.toRealPath())) {

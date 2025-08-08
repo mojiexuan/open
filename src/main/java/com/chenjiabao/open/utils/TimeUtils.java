@@ -1,85 +1,312 @@
 package com.chenjiabao.open.utils;
 
+import com.chenjiabao.open.utils.model.property.Time;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
- * 时间工具
+ * 时间工具类（默认使用毫秒级时间戳）
  * @author ChenJiaBao
  */
 public class TimeUtils {
 
-    private static final String ZONE_ID = "Asia/Shanghai";
+    private String zoneId = "Asia/Shanghai";
+    private final DateTimeFormatter defaultFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(zoneId));
+
+    public TimeUtils(Time time){
+        zoneId = time.getZoneId();
+    }
+
+    /* ========== 秒级与毫秒级转换 ========== */
 
     /**
-     * 时间字符串转时间戳
-     * @param time 需要转换的时间字符串
-     * @param format 字符串格式
-     * @return 秒级时间戳
+     * 秒级时间戳转毫秒级
+     * @param seconds 秒级时间戳
+     * @return 毫秒级时间戳
      */
-    public long getTimeStamp(String time, String format) {
-        // 定义日期时间格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        // 将时间字符串解析为 LocalDateTime 对象
-        LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
-        // 将 LocalDateTime 对象转换为时间戳
-        return dateTime.atZone(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
+    public long toMillis(long seconds) {
+        return seconds * 1000;
     }
 
     /**
-     * 获取当前时间戳
+     * 毫秒级时间戳转秒级
+     * @param millis 毫秒级时间戳
      * @return 秒级时间戳
      */
-    public long getNowTimeStamp(){
-        return ZonedDateTime.now(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
+    public long toSeconds(long millis) {
+        return millis / 1000;
+    }
+
+    /* ========== 毫秒级时间戳操作 ========== */
+
+    /**
+     * 时间字符串转毫秒级时间戳
+     * @param time 时间字符串
+     * @param format 时间格式
+     * @return 毫秒级时间戳
+     */
+    public long parseMillis(String time, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+        return dateTime.atZone(ZoneId.of(zoneId)).toInstant().toEpochMilli();
+    }
+
+    /**
+     * 获取当前毫秒级时间戳
+     * @return 毫秒级时间戳
+     */
+    public long currentMillis() {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * 毫秒级时间戳转时间字符串
+     * @param millis 毫秒级时间戳
+     * @param format 时间格式
+     * @return 格式化后的时间字符串
+     */
+    public String formatMillis(long millis, String format) {
+        return DateTimeFormatter.ofPattern(format)
+                .withZone(ZoneId.of(zoneId))
+                .format(Instant.ofEpochMilli(millis));
+    }
+
+    /**
+     * 毫秒级时间戳转默认格式时间字符串
+     * @param millis 毫秒级时间戳
+     * @return yyyy-MM-dd HH:mm:ss 格式字符串
+     */
+    public String formatMillis(long millis) {
+        return defaultFormatter.format(Instant.ofEpochMilli(millis));
+    }
+
+    /**
+     * 获取当天00:00:00的毫秒级时间戳
+     * @return 毫秒级时间戳
+     */
+    public long todayStartMillis() {
+        return LocalDate.now()
+                .atStartOfDay(ZoneId.of(zoneId))
+                .toInstant()
+                .toEpochMilli();
+    }
+
+    /* ========== 秒级时间戳操作（基于毫秒级转换） ========== */
+
+    /**
+     * 时间字符串转秒级时间戳
+     * @param time 时间字符串
+     * @param format 时间格式
+     * @return 秒级时间戳
+     */
+    public long parseSeconds(String time, String format) {
+        return toSeconds(parseMillis(time, format));
+    }
+
+    /**
+     * 获取当前秒级时间戳
+     * @return 秒级时间戳
+     */
+    public long currentSeconds() {
+        return toSeconds(currentMillis());
+    }
+
+    /**
+     * 秒级时间戳转时间字符串
+     * @param seconds 秒级时间戳
+     * @param format 时间格式
+     * @return 格式化后的时间字符串
+     */
+    public String formatSeconds(long seconds, String format) {
+        return formatMillis(toMillis(seconds), format);
+    }
+
+    /**
+     * 秒级时间戳转默认格式时间字符串
+     * @param seconds 秒级时间戳
+     * @return yyyy-MM-dd HH:mm:ss 格式字符串
+     */
+    public String formatSeconds(long seconds) {
+        return formatMillis(toMillis(seconds));
+    }
+
+    /**
+     * 获取当天00:00:00的秒级时间戳
+     * @return 秒级时间戳
+     */
+    public long todayStartSeconds() {
+        return toSeconds(todayStartMillis());
+    }
+
+    /* ========== 其他实用方法 ========== */
+
+    /**
+     * 计算时间差(毫秒)
+     * @param timestamp1 时间戳1
+     * @param timestamp2 时间戳2
+     * @return 时间差绝对值(毫秒)
+     */
+    public long diffMillis(long timestamp1, long timestamp2) {
+        return Math.abs(timestamp1 - timestamp2);
+    }
+
+    /**
+     * 计算时间差(秒)
+     * @param timestamp1 时间戳1(秒级)
+     * @param timestamp2 时间戳2(秒级)
+     * @return 时间差绝对值(秒)
+     */
+    public long diffSeconds(long timestamp1, long timestamp2) {
+        return diffMillis(toMillis(timestamp1), toMillis(timestamp2)) / 1000;
+    }
+
+    /**
+     * 判断是否是工作日
+     * @param millis 毫秒级时间戳
+     * @return 是否工作日
+     */
+    public boolean isWeekday(long millis) {
+        DayOfWeek day = Instant.ofEpochMilli(millis)
+                .atZone(ZoneId.of(zoneId))
+                .getDayOfWeek();
+        return day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY;
+    }
+
+    /**
+     * 添加指定毫秒数
+     * @param millis 原始时间戳(毫秒)
+     * @param millisecondsToAdd 要添加的毫秒数
+     * @return 新时间戳
+     */
+    public long plusMillis(long millis, long millisecondsToAdd) {
+        return Instant.ofEpochMilli(millis)
+                .plusMillis(millisecondsToAdd)
+                .toEpochMilli();
+    }
+
+    /**
+     * 添加指定秒数
+     * @param seconds 原始时间戳(秒)
+     * @param secondsToAdd 要添加的秒数
+     * @return 新时间戳(秒)
+     */
+    public long plusSeconds(long seconds, long secondsToAdd) {
+        return toSeconds(plusMillis(toMillis(seconds), secondsToAdd * 1000));
+    }
+
+    /**
+     * 判断时间是否在指定范围内
+     * @param time 要判断的时间（毫秒）
+     * @param start 开始时间（毫秒）
+     * @param end 结束时间（毫秒）
+     * @return 是否在范围内
+     */
+    public boolean isBetween(long time, long start, long end) {
+        return time >= start && time <= end;
+    }
+
+    /**
+     * 格式化持续时间（例如：01:23:45）
+     * @param durationMillis 持续时间（毫秒）
+     * @return 格式化后的字符串
+     */
+    public String formatDuration(long durationMillis) {
+        Duration duration = Duration.ofMillis(durationMillis);
+        return String.format("%02d:%02d:%02d",
+                duration.toHours(),
+                duration.toMinutesPart(),
+                duration.toSecondsPart());
+    }
+
+    /**
+     * 获取指定时间的小时数（0-23）
+     * @param millis 毫秒级时间戳
+     * @return 小时
+     */
+    public int getHour(long millis) {
+        return Instant.ofEpochMilli(millis)
+                .atZone(ZoneId.of(zoneId))
+                .getHour();
+    }
+
+    /* ========== 历史方法 ========== */
+
+    /**
+     * 获取当前时间字符串
+     * @return yyyy-MM-dd HH:mm:ss 格式字符串
+     */
+    public String getNowTime(){
+        return formatMillis(currentMillis());
     }
 
     /**
      * 获取当前时间字符串
-     * @return yyyy-MM-dd HH:mm:ss格式
+     * @param format 指定格式
+     * @return 指定格式的字符串
      */
-    public String getNowTime(){
-        return getTime(getNowTimeStamp());
+    public String getNowTime(String format){
+        return formatMillis(currentMillis(),format);
     }
 
     /**
-     * 获取当前时间字符串，并指定返回格式
-     * @param format 格式，例如yyyy-MM-dd HH:mm:ss
+     * 时间字符串转时间戳
+     * <p>
+     * 已弃用，计划在未来版本删除，请使用{@link #parseSeconds(String, String)} 或 {@link #parseMillis(String, String)}代替
+     * @param time 需要转换的时间字符串
+     * @param format 字符串格式
+     * @return 秒级时间戳
      */
-    public String getNowTime(String format){
-        return getTime(getNowTimeStamp(), format);
+    @Deprecated(since = "0.6.0", forRemoval = true)
+    public long getTimeStamp(String time, String format) {
+        return parseSeconds(time, format);
+    }
+
+    /**
+     * 获取当前时间戳
+     * <p>
+     * 已弃用，计划在未来版本删除，请使用{@link #currentSeconds()} 或 {@link #currentMillis()}代替
+     * @return 秒级时间戳
+     */
+    @Deprecated(since = "0.6.0", forRemoval = true)
+    public long getNowTimeStamp(){
+        return currentSeconds();
     }
 
     /**
      * 秒级时间戳转指定格式字符串（东八区）
+     * <p>
+     * 已弃用，计划在未来版本删除，请使用{@link #formatSeconds(long, String)} 或 {@link #formatMillis(long, String)}代替
      * @param time 时间戳(秒级)
      * @param format 格式，例如：yyyy-MM-dd HH:mm:ss
      * @return 转换后的字符串
      */
+    @Deprecated(since = "0.6.0", forRemoval = true)
     public String getTime(long time,String format){
-        // 转换为东八区时间
-        return DateTimeFormatter.ofPattern(format)
-                .withZone(ZoneId.of(ZONE_ID)).format(Instant.ofEpochSecond(time));
+        return formatSeconds(time,format);
     }
 
     /**
      * 秒级时间戳转指定格式（yyyy-MM-dd HH:mm:ss）字符串（东八区）
+     * <p>
+     * 已弃用，计划在未来版本删除，请使用{@link #formatSeconds(long)} 或 {@link #formatMillis(long)}代替
      * @param time 时间戳（秒级）
      * @return 转换后的字符串
      */
+    @Deprecated(since = "0.6.0", forRemoval = true)
     public String getTime(long time){
-        return getTime(time,"yyyy-MM-dd HH:mm:ss");
+        return formatSeconds(time);
     }
 
     /**
      * 获取东八区当日凌晨（00:00）时间戳（秒级）
+     * <p>
+     * 已弃用，计划在未来版本删除，请使用{@link #todayStartMillis()} 或 {@link #todayStartSeconds()}代替
      * @return 时间戳
      */
+    @Deprecated(since = "0.6.0", forRemoval = true)
     public long getNowStartDayTimeStamp(){
-        // 获取当前日期的午夜时间（LocalDateTime）
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        // 转换为时间戳（毫秒）
-        return startOfDay.atZone(ZoneId.of(ZONE_ID)).toInstant().getEpochSecond();
+        return todayStartSeconds();
     }
-
 }

@@ -2,6 +2,9 @@ package com.chenjiabao.open.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.time.ZoneId;
@@ -15,6 +18,7 @@ import java.util.Date;
  */
 public class JwtUtils {
 
+    private final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     // 默认密钥（至少 32 字符）
     private static SecretKey SECRET_KEY = null;
     // 过期时间（2小时，单位：秒）
@@ -26,7 +30,11 @@ public class JwtUtils {
      */
     public synchronized void setJwtSecret(String jwtSecret) {
         if(SECRET_KEY == null){
-            SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(jwtSecret),"HmacSHA256");
+            try {
+                SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(jwtSecret),"HmacSHA256");
+            } catch (Exception e) {
+                log.error("配置的 JWT 密钥应该确保是有效的 Base64 编码字符串");
+            }
         }
     }
 

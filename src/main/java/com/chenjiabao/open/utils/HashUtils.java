@@ -33,7 +33,7 @@ public class HashUtils {
     public String getRandomSalt(){
         // 创建一个 SecureRandom 实例
         SecureRandom secureRandom = new SecureRandom();
-        // 生成16字节的盐值
+        // 生成 16 字节的盐值
         byte[] salt = new byte[16];
         secureRandom.nextBytes(salt);
         // 将盐值转换为 Base64 编码的字符串形式

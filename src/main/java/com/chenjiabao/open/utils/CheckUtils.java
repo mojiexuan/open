@@ -1,8 +1,8 @@
 package com.chenjiabao.open.utils;
 
+import com.chenjiabao.open.utils.model.property.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.regex.Pattern;
 
@@ -32,11 +32,24 @@ public class CheckUtils {
             Pattern.compile("^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}[0-9Xx]$");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final LibraryProperties properties;
+    private final Check check;
 
-    @Autowired
-    public CheckUtils(LibraryProperties properties) {
-        this.properties = properties;
+    public CheckUtils(Check check) {
+        this.check = check;
+    }
+
+    public CheckUtils(int minLength,int maxLength,int level,String specialChars){
+        Check check = new Check();
+        check.setEnabled(true);
+        check.setMin(minLength);
+        check.setMax(maxLength);
+        check.setLevel(level);
+        if (specialChars != null && !specialChars.trim().isEmpty()){
+            check.setSpecialChars(specialChars);
+        }else {
+            check.setSpecialChars("!@#$%^&*()_+");
+        }
+        this.check = check;
     }
 
     /**
@@ -47,10 +60,10 @@ public class CheckUtils {
     public boolean isValidPassword(String password){
         return isValidPassword(
                 password,
-                properties.getCheck().getMin(),
-                properties.getCheck().getMax(),
-                properties.getCheck().getLevel(),
-                properties.getCheck().getSpecialChars()
+                check.getMin(),
+                check.getMax(),
+                check.getLevel(),
+                check.getSpecialChars()
                 );
     }
 
@@ -68,8 +81,8 @@ public class CheckUtils {
         if(!isLengthInRange(password,minLength,maxLength)){
             return false;
         }
-        if(level > 3 && (properties.getCheck().getSpecialChars() == null ||
-                properties.getCheck().getSpecialChars().trim().isEmpty())){
+        if(level > 3 && (check.getSpecialChars() == null ||
+                check.getSpecialChars().trim().isEmpty())){
             logger.warn("密码强度校验未配置特殊字符，无法进行特殊字符校验");
             return false;
         }

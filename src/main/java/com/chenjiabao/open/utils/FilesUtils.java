@@ -1,10 +1,8 @@
 package com.chenjiabao.open.utils;
 
-import com.chenjiabao.open.utils.enums.ResponseCode;
-import com.chenjiabao.open.utils.model.ApiResponse;
+import com.chenjiabao.open.utils.dto.FileStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -21,13 +19,12 @@ public class FilesUtils {
     Logger logger = LoggerFactory.getLogger(FilesUtils.class);
     //项目目录
     public static String classesPath = System.getProperty("user.dir");
-    private final LibraryProperties properties;
+    private final com.chenjiabao.open.utils.model.property.File fileProperty;
     private final TimeUtils timeUtils;
     private final StringUtils stringUtils;
 
-    @Autowired
-    public FilesUtils(LibraryProperties libraryProperties, TimeUtils timeUtils, StringUtils stringUtils) {
-        this.properties = libraryProperties;
+    public FilesUtils(com.chenjiabao.open.utils.model.property.File fileProperty, TimeUtils timeUtils, StringUtils stringUtils) {
+        this.fileProperty = fileProperty;
         this.timeUtils = timeUtils;
         this.stringUtils = stringUtils;
     }
@@ -232,32 +229,32 @@ public class FilesUtils {
      * @param file 文件
      * @return ApiResponse
      */
-    public ApiResponse checkFile(MultipartFile file) {
+    public FileStatus checkFile(MultipartFile file) {
         if (file.isEmpty()) {
-            return ApiResponse.error(ResponseCode.CODE_406, "文件为空").getBody();
+            return new FileStatus(406,"文件为空");
         }
 
         //获取文件名
         String fileName = file.getOriginalFilename();
 
         if (fileName == null || !fileName.contains(".")) {
-            return ApiResponse.error(ResponseCode.CODE_406, "文件名异常").getBody();
+            return new FileStatus(406,"文件名异常");
         }
 
         //获取文件后缀
         String fileSuffix = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         //判断是否支持的类型
-        if (!properties.getFile().getFormat().contains(fileSuffix)) {
-            return ApiResponse.error(ResponseCode.CODE_406, "文件格式不支持").getBody();
+        if (!fileProperty.getFormat().contains(fileSuffix)) {
+            return new FileStatus(406,"文件格式不支持");
         }
 
         long size = file.getSize();
         // 10MB
-        if (size > properties.getFile().getMaxSize()) {
-            return ApiResponse.error(ResponseCode.CODE_406, "文件过大").getBody();
+        if (size > fileProperty.getMaxSize()) {
+            return new FileStatus(406,"文件过大");
         }
 
-        return ApiResponse.success().getBody();
+        return new FileStatus(200,"文件合法");
     }
 
     /**
@@ -308,7 +305,7 @@ public class FilesUtils {
      * @return null为失败，成功则为路径
      */
     public String saveFile(MultipartFile file) {
-        return this.saveFile(file,properties.getFile().getPath());
+        return this.saveFile(file,fileProperty.getPath());
     }
 
 }

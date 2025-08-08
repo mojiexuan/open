@@ -3,13 +3,15 @@ package com.chenjiabao.open.utils;
 import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
 import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
 import com.chenjiabao.open.utils.controller.JiaBaoDocController;
-import com.chenjiabao.open.utils.controller.JiaBaoAssetsController;
+import com.chenjiabao.open.utils.controller.BaoAssetsController;
 import com.chenjiabao.open.utils.docs.scanner.ApiScanner;
+import com.chenjiabao.open.utils.filter.CorsFilter;
 import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,19 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
+    public FilterRegistrationBean<CorsFilter> corsFilter(LibraryProperties properties) {
+        FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
+        // 注册 CorsConfigFilter 过滤器
+        registrationBean.setFilter(new CorsFilter(properties.getApi()));
+        // 设置需要处理跨域的 URL 模式
+        registrationBean.addUrlPatterns("/*");
+        // 设置过滤器的执行顺序，0 是优先级最高
+        registrationBean.setOrder(0);
+        return registrationBean;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public JiaBaoDocController jiaBaoDocController(){
         return new JiaBaoDocController();
     }
@@ -40,8 +55,8 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.assets", name = "enabled", havingValue = "true")
-    public JiaBaoAssetsController jiabaoAssetsController(LibraryProperties properties) {
-        return new JiaBaoAssetsController(properties);
+    public BaoAssetsController jiabaoAssetsController(LibraryProperties properties) {
+        return new BaoAssetsController(properties.getAssets());
     }
 
     @Override
@@ -151,7 +166,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.check", name = "enabled", havingValue = "true")
     public CheckUtils checkUtils(LibraryProperties properties) {
-        return new CheckUtils(properties);
+        return new CheckUtils(properties.getCheck());
     }
 
     @Bean
@@ -160,19 +175,25 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     public FilesUtils filesUtils(LibraryProperties properties,
                                  TimeUtils timeUtils,
                                  StringUtils stringUtils){
-        return  new FilesUtils(properties,timeUtils,stringUtils);
+        return  new FilesUtils(properties.getFile(),timeUtils,stringUtils);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TimeUtils timeUtils() {
-        return new TimeUtils();
+    public TimeUtils timeUtils(LibraryProperties properties) {
+        return new TimeUtils(properties.getTime());
     }
 
     @Bean
     @ConditionalOnMissingBean
     public StringUtils stringUtils() {
         return new StringUtils();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CollectionUtils collectionUtils(){
+        return new CollectionUtils();
     }
 
 }
