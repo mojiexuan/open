@@ -1,6 +1,5 @@
-package com.chenjiabao.open.utils;
+package com.chenjiabao.open.utils.model.property;
 
-import com.chenjiabao.open.utils.model.property.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "chenjiabao.config")
-public class LibraryProperties {
+public class BaoProperties {
     // 分布式机器信息
     @NestedConfigurationProperty
     private Machine machine = new Machine();
@@ -56,4 +55,8 @@ public class LibraryProperties {
     // 时间
     @NestedConfigurationProperty
     private Time time = new Time();
+
+    // 微信
+    @NestedConfigurationProperty
+    private WeChat wechat = new WeChat();
 }

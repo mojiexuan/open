@@ -1,11 +1,14 @@
-package com.chenjiabao.open.utils;
+package com.chenjiabao.open.utils.config;
 
+import com.chenjiabao.open.utils.*;
 import com.chenjiabao.open.utils.aspect.ApiVersionAspect;
 import com.chenjiabao.open.utils.aspect.VersionedRequestMappingHandlerMapping;
+import com.chenjiabao.open.utils.common.WeChatCommon;
 import com.chenjiabao.open.utils.controller.JiaBaoDocController;
 import com.chenjiabao.open.utils.controller.BaoAssetsController;
 import com.chenjiabao.open.utils.docs.scanner.ApiScanner;
 import com.chenjiabao.open.utils.filter.CorsFilter;
+import com.chenjiabao.open.utils.model.property.BaoProperties;
 import com.chenjiabao.open.utils.resolver.RequestAttributeParamArgumentResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,12 +27,19 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnWebApplication
-@EnableConfigurationProperties(LibraryProperties.class)
+@EnableConfigurationProperties(BaoProperties.class)
 public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public FilterRegistrationBean<CorsFilter> corsFilter(LibraryProperties properties) {
+    @ConditionalOnProperty(prefix = "chenjiabao.config.wechat", name = "enabled", havingValue = "true")
+    public WeChatCommon weChatCommon(BaoProperties baoProperties){
+        return new WeChatCommon(baoProperties.getWechat());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public FilterRegistrationBean<CorsFilter> corsFilter(BaoProperties properties) {
         FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
         // 注册 CorsConfigFilter 过滤器
         registrationBean.setFilter(new CorsFilter(properties.getApi()));
@@ -55,7 +65,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.assets", name = "enabled", havingValue = "true")
-    public BaoAssetsController jiabaoAssetsController(LibraryProperties properties) {
+    public BaoAssetsController jiabaoAssetsController(BaoProperties properties) {
         return new BaoAssetsController(properties.getAssets());
     }
 
@@ -83,7 +93,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.api", name = "enabled", havingValue = "true")
     public ApiVersionAspect apiVersionAspect(
-            LibraryProperties properties,
+            BaoProperties properties,
             ApplicationContext applicationContext,
             VersionedRequestMappingHandlerMapping versionedRequestMappingHandlerMapping){
         return new ApiVersionAspect(properties, applicationContext, versionedRequestMappingHandlerMapping);
@@ -92,7 +102,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean // 仅当不存在该类型的bean时，才会创建该bean
     @ConditionalOnProperty(prefix = "chenjiabao.config.hash", name = "enabled", havingValue = "true")
-    public HashUtils hashUtils(LibraryProperties properties) {
+    public HashUtils hashUtils(BaoProperties properties) {
         HashUtils hashUtils = new HashUtils();
         if (properties.getHash().getPepper() != null) {
             hashUtils.setHashPepper(properties.getHash().getPepper());
@@ -103,7 +113,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.jwt", name = "enabled", havingValue = "true")
-    public JwtUtils jwtUtils(LibraryProperties properties) {
+    public JwtUtils jwtUtils(BaoProperties properties) {
         JwtUtils jwtUtils = new JwtUtils();
         if (properties.getJwt().getSecret() != null) {
             jwtUtils.setJwtSecret(properties.getJwt().getSecret());
@@ -120,7 +130,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public SnowflakeUtils snowflakeUtils(LibraryProperties properties) {
+    public SnowflakeUtils snowflakeUtils(BaoProperties properties) {
         return new SnowflakeUtils(properties.getMachine().getId());
     }
 
@@ -133,7 +143,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.mail", name = "enabled", havingValue = "true")
-    public MailUtils.Builder mailUtilsBuilder(CheckUtils checkUtils, LibraryProperties properties) {
+    public MailUtils.Builder mailUtilsBuilder(CheckUtils checkUtils, BaoProperties properties) {
         MailUtils.Builder builder = new MailUtils.Builder(checkUtils);
         if (properties.getMail().getHost() != null) {
             builder = builder.setHost(properties.getMail().getHost());
@@ -155,7 +165,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.mail", name = "enabled", havingValue = "true")
-    public MailUtils mailUtils(MailUtils.Builder builder,LibraryProperties properties) {
+    public MailUtils mailUtils(MailUtils.Builder builder, BaoProperties properties) {
         if(properties.getMail().getUsername() != null){
             return builder.build().setFrom(properties.getMail().getUsername());
         }
@@ -165,14 +175,14 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.check", name = "enabled", havingValue = "true")
-    public CheckUtils checkUtils(LibraryProperties properties) {
+    public CheckUtils checkUtils(BaoProperties properties) {
         return new CheckUtils(properties.getCheck());
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chenjiabao.config.file", name = "enabled", havingValue = "true")
-    public FilesUtils filesUtils(LibraryProperties properties,
+    public FilesUtils filesUtils(BaoProperties properties,
                                  TimeUtils timeUtils,
                                  StringUtils stringUtils){
         return  new FilesUtils(properties.getFile(),timeUtils,stringUtils);
@@ -180,7 +190,7 @@ public class LibraryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public TimeUtils timeUtils(LibraryProperties properties) {
+    public TimeUtils timeUtils(BaoProperties properties) {
         return new TimeUtils(properties.getTime());
     }
 

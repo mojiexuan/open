@@ -1,4 +1,4 @@
-package com.chenjiabao.open.utils.model;
+package com.chenjiabao.open.utils;
 
 import lombok.Getter;
 import lombok.Setter;

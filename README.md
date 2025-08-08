@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.6.2</version>
+    <version>0.6.3</version>
  </dependency>
 ```
 
@@ -62,7 +62,7 @@ public class Example {
 
 ```java
 import com.chenjiabao.open.utils.annotation.RequestAttributeParam;
-import com.chenjiabao.open.utils.model.ApiResponse;
+import com.chenjiabao.open.utils.ApiResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @PostMapping
@@ -105,9 +105,9 @@ CODE_500(500,"服务器内部错误");
 `success()`默认-成功-200
 
 ```java
-import com.chenjiabao.open.utils.model.ApiResponse;
+import com.chenjiabao.open.utils.ApiResponse;
 
-public void example(){
+public void example() {
     ApiResponse.success().build();
 }
 ```
@@ -116,7 +116,7 @@ public void example(){
 
 ```java
 import com.chenjiabao.open.utils.enums.ResponseCode;
-import com.chenjiabao.open.utils.model.ApiResponse;
+import com.chenjiabao.open.utils.ApiResponse;
 
 public void example() {
     ApiResponse.error(ResponseCode.CODE_406, "参数异常").build();
@@ -126,7 +126,7 @@ public void example() {
 `builder()`获取构造器
 
 ```java
-import com.chenjiabao.open.utils.model.ApiResponse;
+import com.chenjiabao.open.utils.ApiResponse;
 
 public void example() {
     ApiResponse.builder().build();

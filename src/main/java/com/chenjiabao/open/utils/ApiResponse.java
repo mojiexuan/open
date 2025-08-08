@@ -1,6 +1,5 @@
-package com.chenjiabao.open.utils.model;
+package com.chenjiabao.open.utils;
 
-import com.chenjiabao.open.utils.TimeUtils;
 import com.chenjiabao.open.utils.enums.ResponseCode;
 import com.chenjiabao.open.utils.model.property.Time;
 import com.fasterxml.jackson.annotation.JsonInclude;

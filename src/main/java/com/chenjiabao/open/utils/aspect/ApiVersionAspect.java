@@ -1,6 +1,6 @@
 package com.chenjiabao.open.utils.aspect;
 
-import com.chenjiabao.open.utils.LibraryProperties;
+import com.chenjiabao.open.utils.model.property.BaoProperties;
 import com.chenjiabao.open.utils.annotation.ApiVersion;
 import com.chenjiabao.open.utils.exception.ApiVersionException;
 import jakarta.annotation.PostConstruct;
@@ -9,7 +9,6 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,14 +28,14 @@ import java.util.stream.Collectors;
 @Aspect
 public class ApiVersionAspect {
 
-    private final LibraryProperties properties;
+    private final BaoProperties properties;
     // 依赖注入Spring应用上下文，用于获取所有控制器Bean
     private final ApplicationContext applicationContext;
     // 用于注册版本化路由
     private final VersionedRequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Autowired
-    public ApiVersionAspect(LibraryProperties properties,
+    public ApiVersionAspect(BaoProperties properties,
                             ApplicationContext applicationContext,
                             VersionedRequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.properties = properties;

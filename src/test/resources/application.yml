@@ -1,5 +1,8 @@
 chenjiabao:
   config:
+    machine:
+      id: 1
+      cpu: 1
     api:
       prefix: server
       access-control-allow-origin: "*"
@@ -13,4 +16,8 @@ chenjiabao:
         - Content-Type
         - Authorization
       access-control-max-age: 86400
-      access-control-allow-credentials: true
+    wechat:
+      pay:
+        v3:
+          api-v3-key: 12345678901234567890123456789012
+      enabled: true

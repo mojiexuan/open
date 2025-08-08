@@ -1,7 +1,6 @@
 package com.chenjiabao.open.utils;
 
 import com.chenjiabao.open.utils.annotation.ApiVersion;
-import com.chenjiabao.open.utils.model.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

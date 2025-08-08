@@ -27,7 +27,7 @@
     <url>https://github.com/majiexuan/open</url>
     <groupId>com.chenjiabao.open</groupId>
     <artifactId>devtools</artifactId>
-    <version>0.6.2</version>
+    <version>0.6.6</version>
     <packaging>jar</packaging>
 
     <scm>
@@ -80,32 +80,11 @@
                 <version>${chenjiabao.javax.xml.bind.version}</version>
             </dependency>
 
-            <!--            添加okhttp3依赖版本管理-->
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${chenjiabao.okhttp.version}</version>
-            </dependency>
-
-            <!--        Gson-->
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${chenjiabao.gson.version}</version>
-            </dependency>
-
 <!--            mail-->
             <dependency>
                 <groupId>org.eclipse.angus</groupId>
                 <artifactId>jakarta.mail</artifactId>
                 <version>${chenjiabao.jakarta.mail}</version>
-            </dependency>
-
-            <!-- esapi 安全验证-->
-            <dependency>
-                <groupId>org.owasp.esapi</groupId>
-                <artifactId>esapi</artifactId>
-                <version>${chenjiabao.owasp.esapi.version}</version>
             </dependency>
 
         </dependencies>
@@ -156,29 +135,11 @@
             <artifactId>jjwt</artifactId>
         </dependency>
 
-        <!--            jwt需要依赖该包-->
-<!--        <dependency>-->
-<!--            <groupId>javax.xml.bind</groupId>-->
-<!--            <artifactId>jaxb-api</artifactId>-->
-<!--        </dependency>-->
-
-        <!--        Gson-->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-
 <!--        mail-->
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
         </dependency>
-
-        <!-- esapi 安全验证-->
-<!--        <dependency>-->
-<!--            <groupId>org.owasp.esapi</groupId>-->
-<!--            <artifactId>esapi</artifactId>-->
-<!--        </dependency>-->
 
         <!--        lombok-->
         <dependency>
